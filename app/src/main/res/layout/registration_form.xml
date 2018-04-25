@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:text="Name"
+        android:textColor="@color/colorPrimary"
+        android:textSize="50px" />
+
+    <EditText
+        android:id="@+id/nameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/loginText"
+        android:layout_below="@+id/name"
+        android:ems="10"
+        android:hint="Enter Your Name"
+        android:inputType="text|textEmailAddress|textPersonName" />
+
+
+    <EditText
+        android:id="@+id/loginText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/login"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:hint="Enter Your EmailId"
+        android:inputType="text|textEmailAddress|textPersonName" />
+
+    <TextView
+        android:id="@+id/login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nameText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="29dp"
+        android:text="Login Id/ Email Id"
+        android:textColor="@color/colorPrimary"
+        android:textSize="50px" />
+
+    <TextView
+        android:id="@+id/password_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/loginText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="21dp"
+        android:text="Password"
+        android:textColor="@color/colorPrimary"
+        android:textSize="50px" />
+
+    <EditText
+        android:id="@+id/password_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/loginText"
+        android:layout_below="@+id/password_text"
+        android:ems="10"
+        android:hint="Enter Password"
+        android:inputType="textPersonName"
+        android:password="true" />
+
+    <TextView
+        android:id="@+id/isDoc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/password_input"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="Are you a doctor?"
+        android:textColor="@color/colorPrimary"
+        android:textSize="40px" />
+
+    <Button
+        android:id="@+id/submit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/radioGroup"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="17dp"
+        android:background="@drawable/buttoncolors"
+        android:text="Submit" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/isDoc"
+        android:layout_below="@+id/isDoc"
+        android:id="@+id/radioGroup">
+
+
+
+        <RadioButton
+        android:id="@+id/isDocYes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/isDoc"
+        android:layout_alignStart="@+id/isDoc"
+        android:layout_below="@+id/isDoc"
+        android:text="Yes" />
+
+        <RadioButton
+            android:id="@+id/isDocNo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/isDocYes"
+            android:layout_alignStart="@+id/isDocYes"
+            android:layout_below="@+id/isDocYes"
+            android:text="No" />
+    </RadioGroup>
+
+</RelativeLayout>
