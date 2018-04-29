@@ -28,7 +28,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         final Button submitButton = (Button) findViewById(R.id.submit_button);
 
-        name = (EditText) findViewById(R.id.nameText);
+        name = (EditText) findViewById(R.id.firstnameText);
         email = (EditText) findViewById(R.id.loginText);
         password = (EditText) findViewById(R.id.password_input);
 
