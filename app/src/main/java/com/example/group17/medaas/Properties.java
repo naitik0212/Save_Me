@@ -10,9 +10,11 @@ import java.io.IOException;
 
 
 public class Properties {
-    public static final String ip = "";
+    public static final String ip = "35.190.86.40";
+    public static final String port = "";
     public static String credFile = Environment.getExternalStorageDirectory().getAbsolutePath()+File.separator+"/SaveMe/credentials.txt";
     public static String credDir = Environment.getExternalStorageDirectory().getAbsolutePath()+File.separator+"/SaveMe";
+
     public static class RegistrationParameters {
         public String firstName = "";
         public String lastName = "";
