@@ -16,21 +16,35 @@ public class Properties {
     public static String credDir = Environment.getExternalStorageDirectory().getAbsolutePath()+File.separator+"/SaveMe";
 
     public static class RegistrationParameters {
-        public String name = "";
-        public String emailId = "";
-        public String password = "";
-        public boolean isDoc = false;
+        public String firstName = "";
+        public String lastName = "";
+        public String age = "";
+        public String address = "";
+        public String phoneNumber = "";
+        public String emergencyNumber = "";
+        public String email = "";
+        public String password="";
+        public String userType="";
 
-        RegistrationParameters(String name, String id,String password , boolean isDoc) {
-            this.name = name;
-            this.emailId = id;
+
+
+
+        RegistrationParameters(String firstName,String lastName,String age,String address,String phoneNumber,String emergencyNumber,String email,String password,String userType) {
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.age = age;
+            this.address = address;
+            this.phoneNumber = phoneNumber;
+            this.emergencyNumber = emergencyNumber;
+            this.email =email;
             this.password = password;
-            this.isDoc = isDoc;
+            this.userType =userType;
+
         }
 
         public File saveParameters() {
             // create parameter string to write
-            String fcontent = "name=" + name + ",emailId=" + emailId + "," +isDoc;
+            String fcontent = "First Name: " + firstName + "\nLast Name: "+ lastName + "\nAge: "+ age + "\nAddress: "+ address + "\nContact: "+phoneNumber+"\nEmergency contact=" + emergencyNumber + "\nEmail Id: " + email + "\npasswprd: " + password + "\nProfession: "+ userType;
             Log.i("", "saveParameters: hi");
 
 
@@ -61,8 +75,6 @@ public class Properties {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
 
             return null;
         }
