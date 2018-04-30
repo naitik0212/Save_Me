@@ -28,7 +28,8 @@
         android:layout_centerHorizontal="true"
         android:ems="10"
         android:hint="Enter Your Name"
-        android:inputType="number" />
+        android:textColor="@color/colorPrimary"
+        android:inputType="text" />
 
     <TextView
         android:id="@+id/lastname"
@@ -46,6 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/lastname"
         android:layout_centerHorizontal="true"
+        android:textColor="@color/colorPrimary"
         android:ems="10"
         android:hint="Enter Your Last Name"
         android:inputType="text|textEmailAddress|textPersonName" />
@@ -68,6 +70,7 @@
         android:layout_centerHorizontal="true"
         android:ems="10"
         android:hint="Enter Your Age"
+        android:textColor="@color/colorPrimary"
         android:inputType="number" />
 
     <TextView
@@ -88,6 +91,7 @@
         android:layout_centerHorizontal="true"
         android:ems="10"
         android:hint="Enter Your Address"
+        android:textColor="@color/colorPrimary"
         android:inputType="text" />
 
     <TextView
@@ -97,7 +101,7 @@
         android:layout_below="@+id/addresstext"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="Are you a doctor?"
+        android:text="Your Profession?"
         android:textColor="@color/colorPrimary"
         android:textSize="40px" />
 
@@ -105,6 +109,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:textColor="@color/colorPrimary"
         android:layout_below="@+id/isDoc"
         android:id="@+id/radioGroup">
 
@@ -116,8 +121,9 @@
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/isDoc"
             android:layout_alignStart="@+id/isDoc"
+            android:textColor="@color/colorPrimary"
             android:layout_below="@+id/isDoc"
-            android:text="Yes" />
+            android:text="doctor" />
 
         <RadioButton
             android:id="@+id/isDocNo"
@@ -125,8 +131,9 @@
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/isDocYes"
             android:layout_alignStart="@+id/isDocYes"
+            android:textColor="@color/colorPrimary"
             android:layout_below="@+id/isDocYes"
-            android:text="No" />
+            android:text="client" />
     </RadioGroup>
 
 
@@ -147,6 +154,7 @@
         android:layout_below="@+id/loginid"
         android:layout_centerHorizontal="true"
         android:ems="10"
+        android:textColor="@color/colorPrimary"
         android:hint="Enter Your EmailId"
         android:inputType="text|textEmailAddress|textPersonName" />
 
@@ -165,10 +173,11 @@
         android:id="@+id/password_input"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/loginText"
+        android:layout_centerHorizontal="true"
         android:layout_below="@+id/password_text"
         android:ems="10"
         android:hint="Enter Password"
+        android:textColor="@color/colorPrimary"
         android:inputType="textPersonName"
         android:password="true" />
 
@@ -179,8 +188,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="Age"
-        android:layout_below="@+id/password_text"
+        android:text="Contact"
+        android:layout_below="@+id/password_input"
         android:textColor="@color/colorPrimary"
         android:textSize="50px" />
 
@@ -188,10 +197,11 @@
         android:id="@+id/phonenumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/age"
+        android:layout_below="@+id/phone"
         android:layout_centerHorizontal="true"
         android:ems="10"
-        android:hint="Enter Your Age"
+        android:textColor="@color/colorPrimary"
+        android:hint="Contact Number"
         android:inputType="number" />
 
     <TextView
@@ -199,7 +209,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="Age"
+        android:text="Emergency contact"
         android:layout_below="@+id/phonenumber"
         android:textColor="@color/colorPrimary"
         android:textSize="50px" />
@@ -210,6 +220,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/emergencyphone"
         android:layout_centerHorizontal="true"
+        android:textColor="@color/colorPrimary"
         android:ems="10"
         android:hint="Enter Emergency contact"
         android:inputType="number" />
@@ -234,7 +245,7 @@
         android:id="@+id/submit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/radioGroup"
+        android:layout_below="@+id/emergencyphonenumber"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="17dp"
         android:background="@drawable/buttoncolors"
