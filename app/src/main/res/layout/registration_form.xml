@@ -1,50 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
 
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/firstname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25dp"
-        android:text="Name"
+        android:text="First Name"
         android:textColor="@color/colorPrimary"
         android:textSize="50px" />
 
     <EditText
-        android:id="@+id/nameText"
+        android:id="@+id/firstnameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/loginText"
-        android:layout_below="@+id/name"
+        android:layout_below="@+id/firstname"
+        android:layout_centerHorizontal="true"
         android:ems="10"
         android:hint="Enter Your Name"
+        android:textColor="@color/colorPrimary"
+        android:inputType="text" />
+
+    <TextView
+        android:id="@+id/lastname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Last Name"
+        android:layout_below="@+id/firstnameText"
+        android:textColor="@color/colorPrimary"
+        android:textSize="50px" />
+
+    <EditText
+        android:id="@+id/lastnametext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lastname"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/colorPrimary"
+        android:ems="10"
+        android:hint="Enter Your Last Name"
         android:inputType="text|textEmailAddress|textPersonName" />
 
+    <TextView
+        android:id="@+id/age"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Age"
+        android:layout_below="@+id/lastnametext"
+        android:textColor="@color/colorPrimary"
+        android:textSize="50px" />
+
+    <EditText
+        android:id="@+id/agetext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/age"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:hint="Enter Your Age"
+        android:textColor="@color/colorPrimary"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Address"
+        android:layout_below="@+id/agetext"
+        android:textColor="@color/colorPrimary"
+        android:textSize="50px" />
+
+    <EditText
+        android:id="@+id/addresstext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/address"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:hint="Enter Your Address"
+        android:textColor="@color/colorPrimary"
+        android:inputType="text" />
+
+    <TextView
+        android:id="@+id/isDoc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/addresstext"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="Your Profession?"
+        android:textColor="@color/colorPrimary"
+        android:textSize="40px" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/colorPrimary"
+        android:layout_below="@+id/isDoc"
+        android:id="@+id/radioGroup">
+
+
+
+        <RadioButton
+            android:id="@+id/isDocYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/isDoc"
+            android:layout_alignStart="@+id/isDoc"
+            android:textColor="@color/colorPrimary"
+            android:layout_below="@+id/isDoc"
+            android:text="doctor" />
+
+        <RadioButton
+            android:id="@+id/isDocNo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/isDocYes"
+            android:layout_alignStart="@+id/isDocYes"
+            android:textColor="@color/colorPrimary"
+            android:layout_below="@+id/isDocYes"
+            android:text="client" />
+    </RadioGroup>
+
+
+    <TextView
+        android:id="@+id/loginid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Email"
+        android:layout_below="@+id/radioGroup"
+        android:textColor="@color/colorPrimary"
+        android:textSize="50px" />
 
     <EditText
         android:id="@+id/loginText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/login"
+        android:layout_below="@+id/loginid"
         android:layout_centerHorizontal="true"
         android:ems="10"
+        android:textColor="@color/colorPrimary"
         android:hint="Enter Your EmailId"
         android:inputType="text|textEmailAddress|textPersonName" />
-
-    <TextView
-        android:id="@+id/login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/nameText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="29dp"
-        android:text="Login Id/ Email Id"
-        android:textColor="@color/colorPrimary"
-        android:textSize="50px" />
 
     <TextView
         android:id="@+id/password_text"
@@ -61,60 +173,85 @@
         android:id="@+id/password_input"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/loginText"
+        android:layout_centerHorizontal="true"
         android:layout_below="@+id/password_text"
         android:ems="10"
         android:hint="Enter Password"
+        android:textColor="@color/colorPrimary"
         android:inputType="textPersonName"
         android:password="true" />
 
+
+
     <TextView
-        android:id="@+id/isDoc"
+        android:id="@+id/phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/password_input"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="Are you a doctor?"
+        android:text="Contact"
+        android:layout_below="@+id/password_input"
         android:textColor="@color/colorPrimary"
-        android:textSize="40px" />
+        android:textSize="50px" />
+
+    <EditText
+        android:id="@+id/phonenumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/phone"
+        android:layout_centerHorizontal="true"
+        android:ems="10"
+        android:textColor="@color/colorPrimary"
+        android:hint="Contact Number"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/emergencyphone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Emergency contact"
+        android:layout_below="@+id/phonenumber"
+        android:textColor="@color/colorPrimary"
+        android:textSize="50px" />
+
+    <EditText
+        android:id="@+id/emergencyphonenumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/emergencyphone"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/colorPrimary"
+        android:ems="10"
+        android:hint="Enter Emergency contact"
+        android:inputType="number" />
+
+
+
+    <!--<TextView-->
+        <!--android:id="@+id/login"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/nameText"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginTop="29dp"-->
+        <!--android:text="Login Id/ Email Id"-->
+        <!--android:textColor="@color/colorPrimary"-->
+        <!--android:textSize="50px" />-->
+
+
+
 
     <Button
         android:id="@+id/submit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/radioGroup"
+        android:layout_below="@+id/emergencyphonenumber"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="17dp"
         android:background="@drawable/buttoncolors"
         android:text="Submit" />
 
-    <RadioGroup
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/isDoc"
-        android:layout_below="@+id/isDoc"
-        android:id="@+id/radioGroup">
 
-
-
-        <RadioButton
-        android:id="@+id/isDocYes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/isDoc"
-        android:layout_alignStart="@+id/isDoc"
-        android:layout_below="@+id/isDoc"
-        android:text="Yes" />
-
-        <RadioButton
-            android:id="@+id/isDocNo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/isDocYes"
-            android:layout_alignStart="@+id/isDocYes"
-            android:layout_below="@+id/isDocYes"
-            android:text="No" />
-    </RadioGroup>
 
 </RelativeLayout>
+</ScrollView>
