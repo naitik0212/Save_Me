@@ -123,7 +123,7 @@
             android:layout_alignStart="@+id/isDoc"
             android:textColor="@color/colorPrimary"
             android:layout_below="@+id/isDoc"
-            android:text="doctor" />
+            android:text="Doctor" />
 
         <RadioButton
             android:id="@+id/isDocNo"
@@ -134,7 +134,7 @@
             android:textColor="@color/colorPrimary"
             android:layout_below="@+id/isDocYes"
             android:checked="true"
-            android:text="client" />
+            android:text="Client" />
     </RadioGroup>
 
 

@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -64,25 +65,33 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 final String emergencyNumber = emergencycontact.getText().toString();
                 final String email = Email.getText().toString();
                 final String password = Password.getText().toString();
-                final String userType = button.getText().toString();
+                final String userType = button.getText().toString().toLowerCase();
 
 
                 //to write code
                 final String location;
 
 
+                //Hide Keyboard
+                InputMethodManager hideKeyboard = (InputMethodManager) getSystemService(RegisterActivity.INPUT_METHOD_SERVICE);
+                hideKeyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
-//                onRadioButtonClicked(v);
+                //Validation check of all parameters if input is correct and entered
+
+                if(firstName.matches("")||lastName.matches("")||age.matches("")||address.matches("")||phoneNumber.matches("")||emergencyNumber.matches("")||userType.matches("")||email.matches("")||password.matches("")) {
+
+                    Toast.makeText(RegisterActivity.this,
+                            "Please enter parameters", Toast.LENGTH_SHORT).show();
+                    return;
+                }else {
+                    Properties.RegistrationParameters param = new Properties.RegistrationParameters(firstName, lastName, age, address, phoneNumber, emergencyNumber, email, password, userType);
+                    new RegisterRequest().execute(param);
 
 
-                Properties.RegistrationParameters param = new Properties.RegistrationParameters(firstName, lastName, age, address, phoneNumber, emergencyNumber, email, password, userType);
-                new RegisterRequest().execute(param);
-
-
-
-                //validation check
+                    //validation check
 //                Toast.makeText(RegisterActivity.this,
 //                        i + " and " + k+ " and " + s, Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -123,6 +132,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 finish();
             }
         }
+    }
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
 }
