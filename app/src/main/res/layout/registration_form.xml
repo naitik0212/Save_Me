@@ -133,6 +133,7 @@
             android:layout_alignStart="@+id/isDocYes"
             android:textColor="@color/colorPrimary"
             android:layout_below="@+id/isDocYes"
+            android:checked="true"
             android:text="client" />
     </RadioGroup>
 
