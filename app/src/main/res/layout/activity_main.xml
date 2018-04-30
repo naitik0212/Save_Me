@@ -22,7 +22,6 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/buttoncolors"
         android:layout_below="@+id/SaveMe"
-
         android:text="Open in Maps" />
 
 </RelativeLayout>
