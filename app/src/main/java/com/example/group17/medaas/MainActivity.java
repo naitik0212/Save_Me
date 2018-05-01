@@ -8,29 +8,94 @@ import android.content.Intent;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.group17.medaas.API.save.SaveMeGet;
+import com.example.group17.medaas.API.save.SaveMePost;
+import com.example.group17.medaas.API.save.callback.OnGetSaveMeResponseSuccess;
+import com.example.group17.medaas.API.save.callback.OnPostSaveMeResponseSuccess;
 import com.example.group17.medaas.API.user.callback.OnPutUserResponseSuccess;
 import com.example.group17.medaas.API.model.User;
 import com.example.group17.medaas.API.user.UserPut;
+import com.google.android.gms.common.util.CrashUtils;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
+    private TextView docListTV = null;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         final Button mapTrigger = (Button) findViewById(R.id.mapTrigger);
+        final Button Services = (Button) findViewById(R.id.Services);
+        final Button saveMe = (Button) findViewById(R.id.SaveMe);
+        final Button cancelSaveMe = (Button) findViewById(R.id.CancelSaveMe);
+        docListTV = (TextView) findViewById(R.id.DocList);
 
-//        scheduleLocationUpdates();
+        Services.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+                Intent activityChangeIntent = new Intent(MainActivity.this, serviceActivity.class);
 
+                // currentContext.startActivity(activityChangeIntent);
 
+                MainActivity.this.startActivity(activityChangeIntent);
+            }
+        });
+
+        cancelSaveMe.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                SaveMePost saveMePost = new SaveMePost();
+                saveMePost.requestCancelAsClient(getApplicationContext(), Properties.user.getUserType(), Properties.user.getId(),
+                        new OnPostSaveMeResponseSuccess() {
+                            @Override
+                            public void afterPostResponseSuccess(JSONObject response) {
+                                Log.d("", "afterPostResponseSuccess: request cancelled with response: " + response.toString());
+                                Toast.makeText(getApplicationContext(), "Request Cancelled", Toast.LENGTH_SHORT).show();
+                                docListTV.setText("");
+                            }
+                        });
+            }
+        });
+
+        saveMe.setOnClickListener(new View.OnClickListener() {
+            public void onClick(final View v) {
+                if (Properties.user != null) {
+                    Long id = Properties.user.getId();
+
+                    SaveMeGet saveMeGet = new SaveMeGet();
+                    saveMeGet.request(getApplicationContext(), id,
+                            new OnGetSaveMeResponseSuccess() {
+                                @Override
+                                public void afterGetResponseSuccess(User[] users) {
+                                    String docList = "";
+                                    for (User user: users) {
+                                        docList += user.getFirstName() + " " + user.getPhoneNumber() + "\n";
+                                    }
+                                    final String docList_ = docList;
+                                    docListTV.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            docListTV.setText(docList_);
+                                            docListTV.setMovementMethod(new ScrollingMovementMethod());
+                                        }
+                                    });
+                                }
+                            });
+                }
+            }
+        });
 
 //        new UserPost().requestLogin(this, "samarth1818@gmail.com", "159357", new OnPostUserResponseSuccess() {
 //            public void afterPostResponseSuccess(JSONObject response) {
@@ -40,16 +105,6 @@ public class MainActivity extends AppCompatActivity {
 //            public void afterPostResponseSuccess(JSONObject response) {
 //            }
 //        });
-
-        User user = new User();
-        user.setId(33L);
-        user.setLocation("33.4235981 -111.9395366");
-        new UserPut().request(this, user, new OnPutUserResponseSuccess() {
-            @Override
-            public void afterPostResponseSuccess(JSONObject response) {
-
-            }
-        });
 
 //        User user = new User();
 //        user.setFirstName("Samarth");
@@ -78,50 +133,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
     }
-
-    public boolean scheduleLocationUpdates(User user) {
-        final ComponentName name = new ComponentName(this, LocationUpdateService.class);
-
-        // create user bundle
-        Gson gson = new Gson();
-        String userJson = gson.toJson(user);
-
-        PersistableBundle bundle = new PersistableBundle();
-        bundle.putString("user", userJson);
-
-        // create JobInfo Object
-        final JobInfo jobInfo = new JobInfo.Builder(123, name)
-                .setMinimumLatency(1000)
-                .setOverrideDeadline(3000)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPersisted(true)
-                .setExtras(bundle)
-                .build();
-
-        // schedule
-        final JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        int result;
-        if (jobScheduler != null) {
-            result = jobScheduler.schedule(jobInfo);
-        } else {
-            Log.d("", "scheduleLocationUpdates: Job Scheduler Null");
-            return false;
-        }
-
-        if (result == JobScheduler.RESULT_SUCCESS) {
-            Log.d("", "scheduleLocationUpdates: Scheduled Job Successfully");
-            return true;
-        } else {
-            Log.d("", "scheduleLocationUpdates: Job Scheduling failed");
-            return false;
-        }
-    }
-
-    public void stopLocationUpdates() {
-        final JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        jobScheduler.cancelAll();
-        Log.d("", "stopLocationUpdates: All Jobs stopped");
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }

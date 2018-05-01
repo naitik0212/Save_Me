@@ -10,9 +10,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.group17.medaas.API.model.MyRequestQueue;
 import com.example.group17.medaas.API.model.User;
+import com.example.group17.medaas.API.user.callback.OnPostUserLoginResponseSuccess;
 import com.example.group17.medaas.API.user.callback.OnPostUserResponseSuccess;
 import com.example.group17.medaas.Properties;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -22,7 +24,7 @@ import static com.android.volley.VolleyLog.TAG;
 
 public class UserPost {
     private static final String endpoint = "user";
-    private static final String endpointLogin = "user/login";
+    private static final String endpointLogin = "user/service";
     private User newUser;
 
 
@@ -50,7 +52,14 @@ public class UserPost {
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
                 new Response.Listener<JSONObject>() {
                     public void onResponse(JSONObject response) {
-                        postResponse.afterPostResponseSuccess(response);
+                        User user = null;
+                        try {
+                            user = new User(response);
+                        } catch(JSONException e) {
+                            user = null;
+                        } finally {
+                            postResponse.afterPostResponseSuccess(user);
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -64,12 +73,12 @@ public class UserPost {
         MyRequestQueue.getInstance(ctx).addToRequestQueue(req);
     }
 
-    public void requestLogin(Context ctx, String email, String password, final OnPostUserResponseSuccess postResponse) {
+    public void requestLogin(Context ctx, String email, String password, final OnPostUserLoginResponseSuccess postResponse) {
 
         // define url
         String url = "http://" + Properties.ip + "/" + endpointLogin;
 
-        // define login hash map
+        // define service hash map
         Map<String, String> loginParams = new HashMap<>();
         loginParams.put("email", email);
         loginParams.put("password", password);
@@ -78,9 +87,7 @@ public class UserPost {
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(loginParams),
                 new Response.Listener<JSONObject>() {
                     public void onResponse(JSONObject response) {
-                        Log.d(TAG, "onResponse: " + response.toString());
-
-                        postResponse.afterPostResponseSuccess(response);
+                            postResponse.afterPostResponseSuccess(response);
                     }
                 },
                 new Response.ErrorListener() {

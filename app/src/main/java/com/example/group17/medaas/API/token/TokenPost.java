@@ -26,14 +26,14 @@ import static com.android.volley.VolleyLog.TAG;
 
 public class TokenPost {
     private static final String endpoint = "token";
+    private static final String param0 = "userId";
 
-    public void request(Context ctx, final int userId, final String deviceToken, final OnPostTokenResponseSuccess postResponse) {
+    public void request(Context ctx, final Long userId, final String deviceToken, final OnPostTokenResponseSuccess postResponse) {
         // define url
-        String url = "http://" + Properties.ip + "/" + endpoint;
+        String url = "http://" + Properties.ip + "/" + endpoint + "?" + param0 + "=" + Long.toString(userId);
 
         // define post parameters
         Map<String, String> params = new HashMap<>();
-        params.put("userId", Integer.toString(userId));
         params.put("deviceToken", deviceToken);
 
         // define request

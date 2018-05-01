@@ -28,6 +28,9 @@ public class SaveMePost {
     private static final String endpointDocResponse = "saveme/docresponse";
     private static final String endpointCancel = "saveme/cancel";
     private static final String endpointComplete = "saveme/complete";
+    private static final String param0 = "clientId";
+    private static final String param1 = "doctorId";
+    private static final String param2 = "requester";
 
     public void requestDocResponse(Context ctx, final Long clientId, final Long doctorId, final OnPostSaveMeResponseSuccess postResponse) {
         // define url
@@ -60,18 +63,15 @@ public class SaveMePost {
         // define url
         String url = "http://" + Properties.ip + "/" + endpointCancel;
 
-        // post paramters
-        Map<String, String> params = new HashMap<>();
         if (requester.equals("client")) {
-            params.put("requester", requester);
-            params.put("clientId", Long.toString(clientId));
+            url += "?" + param0 + "=" + Long.toString(clientId) + "&" + param2 + "=" + requester;
         } else {
             Log.e(TAG, "requestCancelAsClient: invalid requester: " + requester);
             return;
         }
 
         // define request
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, null,
                 new Response.Listener<JSONObject>() {
                     public void onResponse(JSONObject response) {
                         postResponse.afterPostResponseSuccess(response);
@@ -92,19 +92,15 @@ public class SaveMePost {
         // define url
         String url = "http://" + Properties.ip + "/" + endpointCancel;
 
-        // post paramters
-        Map<String, String> params = new HashMap<>();
         if (requester.equals("doctor")) {
-            params.put("requester", requester);
-            params.put("clientId", Long.toString(clientId));
-            params.put("doctorId", Long.toString(doctorId));
+            url += "?" + param0 + "=" + Long.toString(clientId) + "&" + param1 + "=" + Long.toString(doctorId) + "&" + param2 + "=" + requester;
         } else {
             Log.e(TAG, "requestCancelAsClient: invalid requester: " + requester);
             return;
         }
 
         // define request
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, null,
                 new Response.Listener<JSONObject>() {
                     public void onResponse(JSONObject response) {
                         postResponse.afterPostResponseSuccess(response);

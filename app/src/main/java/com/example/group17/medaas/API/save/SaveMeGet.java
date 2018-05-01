@@ -25,10 +25,10 @@ public class SaveMeGet {
     private static final String param0 = "userId";
 
 
-    public void request(Context ctx, int userId, final OnGetSaveMeResponseSuccess postResponse) {
+    public void request(Context ctx, Long userId, final OnGetSaveMeResponseSuccess postResponse) {
 
         // define url
-        String url = "http://" + Properties.ip + "/" + endpoint + "?" + param0 + "=" + Integer.toString(userId);
+        String url = "http://" + Properties.ip + "/" + endpoint + "?" + param0 + "=" + Long.toString(userId);
 
         // define request
         JsonArrayRequest req = new JsonArrayRequest(url,

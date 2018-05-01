@@ -10,12 +10,12 @@
         <!--android:layout_centerHorizontal="true"-->
         <!--android:layout_marginTop="116dp"-->
         <!--android:ems="10"-->
-        <!--android:layout_below="@+id/login"-->
+        <!--android:layout_below="@serviceogin"-->
         <!--android:hint="Enter Your Name"-->
         <!--android:inputType="text|textEmailAddress|textPersonName" />-->
 
     <!--<TextView-->
-        <!--android:id="@+id/login"-->
+        <!--android:id="@serviceogin"-->
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content"-->
         <!--android:layout_alignParentTop="true"-->
@@ -48,24 +48,24 @@
         <!--android:inputType="textPersonName"-->
         <!--android:password="true" />-->
 
-    <!--<Button-->
-        <!--android:id="@+id/submit_button"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/password_input"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_marginTop="25dp"-->
-        <!--android:background="@drawable/buttoncolors"-->
-        <!--android:text="Submit" />-->
+    <Button
+        android:id="@+id/login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Register"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/buttoncolors"
+        android:text="Login" />
 
     <Button
         android:id="@+id/Register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="152dp"
-        android:textSize="12dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/login_button"
+        android:layout_marginTop="181dp"
         android:background="@drawable/buttoncolors"
-        android:text="Register" />
+        android:text="Register"
+        android:textSize="12dp" />
 </RelativeLayout>
