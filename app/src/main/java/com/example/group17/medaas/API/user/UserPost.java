@@ -24,7 +24,7 @@ import static com.android.volley.VolleyLog.TAG;
 
 public class UserPost {
     private static final String endpoint = "user";
-    private static final String endpointLogin = "user/service";
+    private static final String endpointLogin = "user/login";
     private User newUser;
 
 
@@ -87,13 +87,23 @@ public class UserPost {
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(loginParams),
                 new Response.Listener<JSONObject>() {
                     public void onResponse(JSONObject response) {
-                            postResponse.afterPostResponseSuccess(response);
+                        User user = null;
+                        try {
+                            user = new User(response);
+                            Log.d(TAG, "onResponse: login success: " + user.getFirstName());
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                            Log.d(TAG, "onResponse: login failed!");
+                            user = null;
+                        }
+                        postResponse.afterPostResponseSuccess(user);
                     }
                 },
                 new Response.ErrorListener() {
                     public void onErrorResponse(VolleyError error) {
                         Log.d(TAG, "onErrorResponse: " + error.getMessage());
-                        error.printStackTrace();
+                        User user = null;
+                        postResponse.afterPostResponseSuccess(user);
                     }
                 });
 

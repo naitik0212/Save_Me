@@ -1,21 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent" android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/LogoutUser"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/CompleteSaveMeUser"
-        android:layout_marginTop="34dp"
-        android:background="@drawable/buttoncolors"
-        android:text="Logout" />
-
-    <Button
-        android:id="@+id/SaveMeUser"
+        android:id="@+id/SaveMe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -24,54 +14,65 @@
         android:text="Save Me" />
 
     <Button
-        android:id="@+id/CancelSaveMeUser"
+        android:id="@+id/Logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/CompleteSaveMeUser"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/SaveMe"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/buttoncolors"
+        android:text="Logout" />
+
+
+    <Button
+        android:id="@+id/CancelSaveMe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/SaveMe"
+        android:layout_alignBottom="@+id/SaveMe"
+        android:layout_alignParentEnd="true"
         android:background="@drawable/buttoncolors"
         android:text="Cancel Request" />
 
     <Button
-        android:id="@+id/CompleteSaveMeUser"
+        android:id="@+id/CompleteSaveMe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/CancelSaveMeUser"
+        android:layout_below="@+id/CancelSaveMe"
         android:background="@drawable/buttoncolors"
         android:text="Complete Request" />
 
     <Button
-        android:id="@+id/mapTrigger"
+        android:id="@+id/Accept"
         android:layout_width="wrap_content"
 
         android:layout_height="wrap_content"
 
-        android:layout_alignEnd="@+id/CancelSaveMeUser"
+        android:layout_alignEnd="@+id/ReqDetail"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="152dp"
         android:background="@drawable/buttoncolors"
-        android:text="Open in Maps" />
+        android:text="Accept" />
 
     <Button
-        android:id="@+id/Services"
+        android:id="@+id/Deny"
         android:layout_width="wrap_content"
 
         android:layout_height="wrap_content"
 
-        android:layout_alignBaseline="@+id/mapTrigger"
-        android:layout_alignBottom="@+id/mapTrigger"
+        android:layout_alignStart="@+id/ReqDetail"
+        android:layout_alignBottom="@+id/Accept"
         android:layout_alignParentStart="true"
         android:background="@drawable/buttoncolors"
-        android:text="Location Service Launcher" />
+        android:text="Deny" />
 
     <TextView
-        android:id="@+id/DocList"
+        android:id="@+id/ReqDetail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/Services"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/Deny"
+        android:layout_below="@+id/Logout"
         android:text="..." />
 
 </RelativeLayout>

@@ -35,6 +35,7 @@ public class SaveMeGet {
                 new Response.Listener<JSONArray>() {
                     public void onResponse(JSONArray response) {
                         int len = response.length();
+                        Log.d(TAG, "onResponse: " + Integer.toString(len) + " doctors found: " + response.toString());
                         User[] users = new User[len];
                         for (int i = 0; i < len; i++) {
                             User user = null;
@@ -42,11 +43,11 @@ public class SaveMeGet {
                                 user = new User(response.getJSONObject(i));
                             } catch(JSONException e) {
                                 user = null;
+                                e.printStackTrace();
                             } finally {
                                 users[i] = user;
                             }
                         }
-
                         postResponse.afterGetResponseSuccess(users);
 
                     }

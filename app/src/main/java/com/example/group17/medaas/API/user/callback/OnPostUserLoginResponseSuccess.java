@@ -9,5 +9,5 @@ import org.json.JSONObject;
  */
 
 public interface OnPostUserLoginResponseSuccess {
-    void afterPostResponseSuccess(JSONObject response);
+    void afterPostResponseSuccess(User user);
 }

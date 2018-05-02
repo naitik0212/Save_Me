@@ -13,6 +13,7 @@ import com.example.group17.medaas.API.save.callback.OnPostSaveMeResponseSuccess;
 import com.example.group17.medaas.API.user.callback.OnPostUserResponseSuccess;
 import com.example.group17.medaas.Properties;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class SaveMePost {
 
     public void requestDocResponse(Context ctx, final Long clientId, final Long doctorId, final OnPostSaveMeResponseSuccess postResponse) {
         // define url
-        String url = "http://" + Properties.ip + "/" + endpointDocResponse;
+        String url = "http://" + Properties.ip + "/" + endpointDocResponse + "?" + param0 + "=" + Long.toString(clientId) + "&" + param1 + "=" + Long.toString(doctorId);
 
         // post paramters
         Map<String, String> params = new HashMap<>();
@@ -74,6 +75,7 @@ public class SaveMePost {
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, null,
                 new Response.Listener<JSONObject>() {
                     public void onResponse(JSONObject response) {
+                        Log.d(TAG, "onResponse: Save Me Cancel " + response.toString());
                         postResponse.afterPostResponseSuccess(response);
                     }
                 },
@@ -81,6 +83,13 @@ public class SaveMePost {
                     public void onErrorResponse(VolleyError error) {
                         Log.d(TAG, "onErrorResponse: " + error.getMessage());
                         error.printStackTrace();
+                        JSONObject errorJson = new JSONObject();
+                        try {
+                            errorJson.put("error",error.getMessage());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        postResponse.afterPostResponseSuccess(errorJson);
                     }
                 });
 
@@ -103,6 +112,7 @@ public class SaveMePost {
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, null,
                 new Response.Listener<JSONObject>() {
                     public void onResponse(JSONObject response) {
+                        Log.d(TAG, "onResponse: Save Me Cancel " + response.toString());
                         postResponse.afterPostResponseSuccess(response);
                     }
                 },
@@ -110,6 +120,13 @@ public class SaveMePost {
                     public void onErrorResponse(VolleyError error) {
                         Log.d(TAG, "onErrorResponse: " + error.getMessage());
                         error.printStackTrace();
+                        JSONObject errorJson = new JSONObject();
+                        try {
+                            errorJson.put("error",error.getMessage());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        postResponse.afterPostResponseSuccess(errorJson);
                     }
                 });
 
@@ -121,20 +138,18 @@ public class SaveMePost {
         // define url
         String url = "http://" + Properties.ip + "/" + endpointComplete;
 
-        // post paramters
-        Map<String, String> params = new HashMap<>();
         if (requester.equals("client")) {
-            params.put("requester", requester);
-            params.put("clientId", Long.toString(clientId));
+            url += "?" + param0 + "=" + Long.toString(clientId) + "&" + param2 + "=" + requester;
         } else {
             Log.e(TAG, "requestCancelAsClient: invalid requester: " + requester);
             return;
         }
 
         // define request
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, null,
                 new Response.Listener<JSONObject>() {
                     public void onResponse(JSONObject response) {
+                        Log.d(TAG, "onResponse: Save Me Cancel " + response.toString());
                         postResponse.afterPostResponseSuccess(response);
                     }
                 },
@@ -142,6 +157,13 @@ public class SaveMePost {
                     public void onErrorResponse(VolleyError error) {
                         Log.d(TAG, "onErrorResponse: " + error.getMessage());
                         error.printStackTrace();
+                        JSONObject errorJson = new JSONObject();
+                        try {
+                            errorJson.put("error",error.getMessage());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        postResponse.afterPostResponseSuccess(errorJson);
                     }
                 });
 
@@ -153,21 +175,18 @@ public class SaveMePost {
         // define url
         String url = "http://" + Properties.ip + "/" + endpointComplete;
 
-        // post paramters
-        Map<String, String> params = new HashMap<>();
         if (requester.equals("doctor")) {
-            params.put("requester", requester);
-            params.put("clientId", Long.toString(clientId));
-            params.put("doctorId", Long.toString(doctorId));
+            url += "?" + param0 + "=" + Long.toString(clientId) + "&" + param1 + "=" + Long.toString(doctorId) + "&" + param2 + "=" + requester;
         } else {
             Log.e(TAG, "requestCancelAsClient: invalid requester: " + requester);
             return;
         }
 
         // define request
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, null,
                 new Response.Listener<JSONObject>() {
                     public void onResponse(JSONObject response) {
+                        Log.d(TAG, "onResponse: Save Me Cancel " + response.toString());
                         postResponse.afterPostResponseSuccess(response);
                     }
                 },
@@ -175,6 +194,13 @@ public class SaveMePost {
                     public void onErrorResponse(VolleyError error) {
                         Log.d(TAG, "onErrorResponse: " + error.getMessage());
                         error.printStackTrace();
+                        JSONObject errorJson = new JSONObject();
+                        try {
+                            errorJson.put("error",error.getMessage());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        postResponse.afterPostResponseSuccess(errorJson);
                     }
                 });
 

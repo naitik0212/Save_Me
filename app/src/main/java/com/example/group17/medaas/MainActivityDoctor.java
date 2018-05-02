@@ -6,25 +6,25 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.group17.medaas.API.model.User;
 import com.example.group17.medaas.API.save.SaveMeGet;
 import com.example.group17.medaas.API.save.SaveMePost;
 import com.example.group17.medaas.API.save.callback.OnGetSaveMeResponseSuccess;
 import com.example.group17.medaas.API.save.callback.OnPostSaveMeResponseSuccess;
-import com.example.group17.medaas.API.model.User;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
 import java.io.File;
 
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivityDoctor extends AppCompatActivity {
     // Thread handler
     private Handler mHandler;
     private String currentStatus = "force update screen";
@@ -32,16 +32,19 @@ public class MainActivity extends AppCompatActivity {
     private Thread updateTracker;
     private final int SCREEN_REFRESH_RATE_IN_MILLIS = 300;
 
-    private TextView docListTV = null;
+
+    private TextView reqDetailTV = null;
     private Button saveMe;
     private Button cancelSaveMe;
     private Button logout;
     private Button completedSaveMe;
+    private Button acceptSaveMe;
+    private Button denySaveMe;
 
     @Override
-    protected void onCreate(final Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_doctor);
 
         // Initializing handler here attaches it to this thread
         mHandler = new Handler();
@@ -49,12 +52,14 @@ public class MainActivity extends AppCompatActivity {
         // retrive active session if it exists
         Properties.retriveSessionFromFile();
 
-        saveMe = (Button) findViewById(R.id.SaveMeUser);
-        cancelSaveMe = (Button) findViewById(R.id.CancelSaveMeUser);
-        completedSaveMe = (Button) findViewById(R.id.CompleteSaveMeUser);
-        logout = (Button) findViewById(R.id.LogoutUser);
+        saveMe = (Button) findViewById(R.id.SaveMe);
+        cancelSaveMe = (Button) findViewById(R.id.CancelSaveMe);
+        completedSaveMe = (Button) findViewById(R.id.CompleteSaveMe);
+        logout = (Button) findViewById(R.id.Logout);
+        acceptSaveMe = (Button) findViewById(R.id.Accept);
+        denySaveMe = (Button) findViewById(R.id.Deny);
 
-        docListTV = (TextView) findViewById(R.id.DocList);
+        reqDetailTV = (TextView) findViewById(R.id.ReqDetail);
 
         logout.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -73,8 +78,8 @@ public class MainActivity extends AppCompatActivity {
                 if (activeSessionFile.exists()) activeSessionFile.delete();
 
                 // go back to Register/Login screen
-                Intent activityChangeIntent = new Intent(MainActivity.this, Register.class);
-                MainActivity.this.startActivity(activityChangeIntent);
+                Intent activityChangeIntent = new Intent(MainActivityDoctor.this, Register.class);
+                MainActivityDoctor.this.startActivity(activityChangeIntent);
                 finish();
             }
         });
@@ -82,23 +87,36 @@ public class MainActivity extends AppCompatActivity {
         cancelSaveMe.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 SaveMePost saveMePost = new SaveMePost();
-                saveMePost.requestCancelAsClient(getApplicationContext(), Properties.user.getUserType(), Properties.user.getId(),
-                        new OnPostSaveMeResponseSuccess() {
-                            @Override
-                            public void afterPostResponseSuccess(JSONObject response) {
-                                Log.d("", "afterPostResponseSuccess: request cancelled with response: " + response.toString());
-                                Toast.makeText(getApplicationContext(), "Request Cancelled", Toast.LENGTH_SHORT).show();
-                                Properties.clientDoctorSession.setStatus(ClientDoctorSession.STATUS_READY);
-                                Properties.saveToFile(new Gson().toJson(Properties.clientDoctorSession), Properties.credDir, Properties.activeSessionFile);
-                            }
-                        });
+                if (Properties.clientDoctorSession.getStatus().equals(ClientDoctorSession.STATUS_CLIENT_REQUESTED_OUTGOING)) {
+                    saveMePost.requestCancelAsClient(getApplicationContext(), "client", Properties.user.getId(),
+                            new OnPostSaveMeResponseSuccess() {
+                                @Override
+                                public void afterPostResponseSuccess(JSONObject response) {
+                                    Log.d("", "afterPostResponseSuccess: request cancelled with response: " + response.toString());
+                                    Toast.makeText(getApplicationContext(), "Request Cancelled", Toast.LENGTH_SHORT).show();
+                                    Properties.clientDoctorSession.setStatus(ClientDoctorSession.STATUS_READY);
+                                    Properties.saveToFile(new Gson().toJson(Properties.clientDoctorSession), Properties.credDir, Properties.activeSessionFile);
+                                }
+                            });
+                } else {
+                    saveMePost.requestCancelAsDoctor(getApplicationContext(), Properties.user.getUserType(), Properties.clientDoctorSession.getClientUser().getId(),Properties.user.getId(),
+                            new OnPostSaveMeResponseSuccess() {
+                                @Override
+                                public void afterPostResponseSuccess(JSONObject response) {
+                                    Log.d("", "afterPostResponseSuccess: request cancelled with response: " + response.toString());
+                                    Toast.makeText(getApplicationContext(), "Request Cancelled", Toast.LENGTH_SHORT).show();
+                                    Properties.clientDoctorSession.setStatus(ClientDoctorSession.STATUS_READY);
+                                    Properties.saveToFile(new Gson().toJson(Properties.clientDoctorSession), Properties.credDir, Properties.activeSessionFile);
+                                }
+                            });
+                }
             }
         });
 
         completedSaveMe.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 SaveMePost saveMePost = new SaveMePost();
-                saveMePost.requestCompleteAsClient(getApplicationContext(), Properties.user.getUserType(), Properties.user.getId(),
+                saveMePost.requestCompleteAsDoctor(getApplicationContext(), Properties.user.getUserType(), Properties.clientDoctorSession.getClientUser().getId(),Properties.user.getId(),
                         new OnPostSaveMeResponseSuccess() {
                             @Override
                             public void afterPostResponseSuccess(JSONObject response) {
@@ -122,15 +140,41 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void afterGetResponseSuccess(User[] users) {
                                     Properties.clientDoctorSession = new ClientDoctorSession();
-                                    Properties.clientDoctorSession.setStatus(ClientDoctorSession.STATUS_CLIENT_REQUESTED);
+                                    Properties.clientDoctorSession.setStatus(ClientDoctorSession.STATUS_CLIENT_REQUESTED_OUTGOING);
                                     Properties.saveToFile(new Gson().toJson(Properties.clientDoctorSession), Properties.credDir, Properties.activeSessionFile);
                                     Properties.clientDoctorSession.setDoctorsList(users);
 
                                     if (users == null || users.length == 0)
-                                        Toast.makeText(MainActivity.this, "No doctors available in this area. \n Please cancel request and try again in some time \n or call 911 now.", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(MainActivityDoctor.this, "No doctors available in this area. \n Please cancel request and try again in some time \n or call 911 now.", Toast.LENGTH_LONG).show();
                                 }
                             });
                 }
+            }
+        });
+
+        acceptSaveMe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                SaveMePost saveMePost = new SaveMePost();
+                saveMePost.requestDocResponse(getApplicationContext(), Properties.clientDoctorSession.getClientUser().getId(),Properties.user.getId(),
+                        new OnPostSaveMeResponseSuccess() {
+                            @Override
+                            public void afterPostResponseSuccess(JSONObject response) {
+                                Log.d("", "afterPostResponseSuccess: request accepted with response: " + response.toString());
+                                Toast.makeText(getApplicationContext(), "Patient will be notified with your details", Toast.LENGTH_SHORT).show();
+                                Properties.clientDoctorSession.setStatus(ClientDoctorSession.STATUS_DOCTOR_RESPONDED_OUTGOING);
+                                Properties.saveToFile(new Gson().toJson(Properties.clientDoctorSession), Properties.credDir, Properties.activeSessionFile);
+                            }
+                        });
+            }
+        });
+
+        denySaveMe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                Properties.clientDoctorSession.setStatus(ClientDoctorSession.STATUS_READY);
+                Properties.saveToFile(new Gson().toJson(Properties.clientDoctorSession), Properties.credDir, Properties.activeSessionFile);
+                Toast.makeText(getApplicationContext(), "Request denied", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -149,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // detect change in status and update
                     if (!newStatus.equals(prevStatus)) {
+                        currentStatus = newStatus;
                         if (newStatus.equals(ClientDoctorSession.STATUS_READY)) {
                             // call ui update for status ready
                             mHandler.post(new Runnable() {
@@ -165,12 +210,28 @@ public class MainActivity extends AppCompatActivity {
                                     updateUI_CLIENT_REQUESTED();
                                 }
                             });
+                        } else if (newStatus.equals(ClientDoctorSession.STATUS_CLIENT_REQUESTED_OUTGOING)) {
+                            // call ui update for status doctor requested
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    updateUI_CLIENT_REQUESTED_OUTGOING();
+                                }
+                            });
                         } else if (newStatus.equals(ClientDoctorSession.STATUS_DOCTOR_RESPONDED)) {
                             // call ui update for status doctor responded
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     updateUI_DOCTOR_RESPONDED();
+                                }
+                            });
+                        } else if (newStatus.equals(ClientDoctorSession.STATUS_DOCTOR_RESPONDED_OUTGOING)) {
+                            // call ui update for status doctor responded
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    updateUI_DOCTOR_RESPONDED_OUTGOING();
                                 }
                             });
                         } else if (newStatus.equals(ClientDoctorSession.STATUS_DOCTOR_CANCELLED)) {
@@ -182,10 +243,9 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
                         }
-                        currentStatus = newStatus;
                     }
                     // check if doctor's list is received...
-                    if (newStatus.equals(ClientDoctorSession.STATUS_CLIENT_REQUESTED) && Properties.clientDoctorSession.getDoctorsList() != null) {
+                    if (newStatus.equals(ClientDoctorSession.STATUS_CLIENT_REQUESTED_OUTGOING) && Properties.clientDoctorSession.getDoctorsList() != null) {
                         // call ui update for showing list of doctors
                         mHandler.post(new Runnable() {
                             @Override
@@ -210,34 +270,75 @@ public class MainActivity extends AppCompatActivity {
         saveMe.setVisibility(View.VISIBLE);
         cancelSaveMe.setVisibility(View.GONE);
         completedSaveMe.setVisibility(View.GONE);
-        docListTV.setText("Medical emergency? Click on SAVE ME button now!");
+        acceptSaveMe.setVisibility(View.GONE);
+        denySaveMe.setVisibility(View.GONE);
+        Log.d("", "updateUI_STATUS_READY: updating text view...");
+        reqDetailTV.setText("Hello Dr. " + Properties.user.getLastName() + ", you will receive patient emergencies here.\n\n\"Medical emergency? Click on SAVE ME button now!");
     }
 
-    private void updateUI_CLIENT_REQUESTED() {
+    private void updateUI_CLIENT_REQUESTED_OUTGOING() {
         saveMe.setVisibility(View.GONE);
         cancelSaveMe.setVisibility(View.VISIBLE);
         completedSaveMe.setVisibility(View.GONE);
-        docListTV.setText("Searching doctors in vicinity...\n\n ...click Cancel to cancel the request.");
+        acceptSaveMe.setVisibility(View.GONE);
+        denySaveMe.setVisibility(View.GONE);
+        reqDetailTV.setText("Searching doctors in vicinity...\n\n ...click Cancel to cancel the request.");
     }
 
     private void updateUI_DOCTOR_RESPONDED() {
         saveMe.setVisibility(View.GONE);
         cancelSaveMe.setVisibility(View.VISIBLE);
         completedSaveMe.setVisibility(View.VISIBLE);
+        acceptSaveMe.setVisibility(View.GONE);
+        denySaveMe.setVisibility(View.GONE);
 
         String text = "Following doctor will attend you: \n\n";
         text += Properties.clientDoctorSession.getDoctorUser().getFirstName() + " " +
                 Properties.clientDoctorSession.getDoctorUser().getLastName() + " " +
                 Properties.clientDoctorSession.getDoctorUser().getPhoneNumber() + "\n";
         text += "...click Cancel to cancel the request, or Completed to finish the request.";
-        docListTV.setText(text);
+        reqDetailTV.setText(text);
+    }
+
+
+    private void updateUI_CLIENT_REQUESTED() {
+        saveMe.setVisibility(View.VISIBLE);
+        cancelSaveMe.setVisibility(View.GONE);
+        completedSaveMe.setVisibility(View.GONE);
+        acceptSaveMe.setVisibility(View.VISIBLE);
+        denySaveMe.setVisibility(View.VISIBLE);
+
+        String text = "Medical emergency requested by...: \n\n";
+        text += Properties.clientDoctorSession.getClientUser().getFirstName() + " " +
+                Properties.clientDoctorSession.getClientUser().getLastName() + " " +
+                Properties.clientDoctorSession.getClientUser().getPhoneNumber() + "\n";
+        text += "...click Accept to attend the request, or Deny to reject.";
+        reqDetailTV.setText(text);
+    }
+
+    private void updateUI_DOCTOR_RESPONDED_OUTGOING() {
+        saveMe.setVisibility(View.VISIBLE);
+        cancelSaveMe.setVisibility(View.VISIBLE);
+        completedSaveMe.setVisibility(View.VISIBLE);
+        acceptSaveMe.setVisibility(View.GONE);
+        denySaveMe.setVisibility(View.GONE);
+
+        String text = "You are attending this patient...: \n\n";
+        text += Properties.clientDoctorSession.getClientUser().getFirstName() + " " +
+                Properties.clientDoctorSession.getClientUser().getLastName() + " " +
+                Properties.clientDoctorSession.getClientUser().getPhoneNumber() + "\n\n";
+
+        text += "...click Cancel to cancel the request, or Completed to finish the request.";
+        reqDetailTV.setText(text);
     }
 
     private void updateUI_DOCTOR_CANCELLED() {
         saveMe.setVisibility(View.GONE);
         cancelSaveMe.setVisibility(View.VISIBLE);
         completedSaveMe.setVisibility(View.GONE);
-        docListTV.setText("Doctor is not available.\nNotifying other doctors in vicinity...");
+        acceptSaveMe.setVisibility(View.GONE);
+        denySaveMe.setVisibility(View.GONE);
+        reqDetailTV.setText("Doctor is not available.\nNotifying other doctors in vicinity...");
     }
 
     private void updateUI_DOCTOR_LIST() {
@@ -250,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
             }
             text += "... please wait until someone responds.\n\n";
             text += "...click Cancel to cancel the request.";
-            docListTV.setText(text);
+            reqDetailTV.setText(text);
         }
     }
 
@@ -270,4 +371,5 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onBackPressed();
     }
+
 }

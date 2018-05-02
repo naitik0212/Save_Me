@@ -14,17 +14,19 @@ import android.widget.Button;
 import android.Manifest;
 
 
+import com.example.group17.medaas.API.model.User;
+import com.google.gson.Gson;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by naitikshah on 4/19/18.
- */
 
 public class Register extends AppCompatActivity implements View.OnClickListener {
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +35,10 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         final Button Register = (Button) findViewById(R.id.Register);
         final Button Login = (Button) findViewById(R.id.login_button);
 
-
         Register.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
                 Intent activityChangeIntent = new Intent(Register.this, RegisterActivity.class);
-
-                // currentContext.startActivity(activityChangeIntent);
-
                 Register.this.startActivity(activityChangeIntent);
             }
         });
@@ -49,39 +47,74 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
             public void onClick(View v) {
                 // Perform action on click
                 Intent activityChangeIntent = new Intent(Register.this, loginActivity.class);
-
-                // currentContext.startActivity(activityChangeIntent);
-
                 Register.this.startActivity(activityChangeIntent);
             }
         });
 
-
-
         checkLocationPermission();
 
-
         if (checkCredentials()) {
-            Intent intent = new Intent(Register.this, MainActivity.class);
+            // check if any session is active...
+            checkActiveSession();
+
+            Log.d("Register", "onCreate: " + Properties.user.getUserType());
+
+            // navigate
+            Intent intent;
+            if (Properties.user.getUserType().equals("client")) {
+                intent = new Intent(Register.this, MainActivity.class);
+            } else if (Properties.user.getUserType().equals("doctor")) {
+                intent = new Intent(Register.this, MainActivityDoctor.class);
+            } else {
+                return;
+            }
             Register.this.startActivity(intent);
             finish();
+        } else {
+            Log.d("Register", "onCreate: checkCredentials failed!");
         }
     }
 
     public boolean checkCredentials() {
         File credFile = new File(Properties.credFile);
+
         if (!credFile.exists()) {
+            Log.d("", "checkCredentials: Cred file does not exist");
             return false;
         }
 
-        return true;
+        //Read text from file
+        StringBuilder text = new StringBuilder();
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(credFile));
+            String line;
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
+            }
+            br.close();
+
+            Gson gson = new Gson();
+            User user = gson.fromJson(text.toString(), User.class);
+            Properties.user = user;
+            return true;
+        } catch (IOException e) {
+            Log.d("", "checkCredentials: IOException: " + e.getMessage());
+            return false;
+        }
     }
+
+    private void checkActiveSession() {
+        Properties.retriveSessionFromFile();
+        if (Properties.clientDoctorSession == null)
+            Properties.clientDoctorSession = new ClientDoctorSession();
+            Properties.saveToFile(new Gson().toJson(Properties.clientDoctorSession).toString(),Properties.credDir,Properties.activeSessionFile);
+    }
+
 
     @Override
-    public void onClick(View v) {
-
-
-    }
+    public void onClick(View v) {}
 
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
@@ -269,8 +302,6 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
             }
             return;
         }
-
-
     }
 
 }

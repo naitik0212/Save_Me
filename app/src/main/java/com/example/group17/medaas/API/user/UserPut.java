@@ -41,7 +41,6 @@ public class UserPut {
                 new Response.Listener<JSONObject>() {
                     public void onResponse(JSONObject response) {
                         Log.d(TAG, "onResponse: " + response.toString());
-
                         postResponse.afterPostResponseSuccess(response);
                     }
                 },
@@ -49,6 +48,7 @@ public class UserPut {
                     public void onErrorResponse(VolleyError error) {
                         Log.d(TAG, "onErrorResponse: " + error.getMessage());
                         error.printStackTrace();
+                        postResponse.afterPostResponseSuccess(null);
                     }
                 });
 

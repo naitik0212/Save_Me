@@ -14,6 +14,7 @@ import com.example.group17.medaas.Properties;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import static com.android.volley.VolleyLog.TAG;
 
@@ -22,23 +23,41 @@ public class UserGet {
     private static final String param0 = "userId";
 
 
-    public void request(Context ctx, int userId, final OnGetUserResponseSuccess postResponse) {
+    public void request(Context ctx, Long userId, final OnGetUserResponseSuccess postResponse) {
 
         // define url
-        String url = "http://" + Properties.ip + "/" + endpoint + "?" + param0 + "=" + Integer.toString(userId);
+        String url = "http://" + Properties.ip + "/" + endpoint + "?" + param0 + "=" + Long.toString(userId);
 
         // define request
         JsonArrayRequest req = new JsonArrayRequest(url,
                 new Response.Listener<JSONArray>() {
                     public void onResponse(JSONArray response) {
+                        JSONObject userJson = null;
                         User user = null;
+                        int tokenId = Properties.TOKEN_ID_NULL;
+
+                        // prepare User object
                         try {
-                            user = new User(response.getJSONObject(0));
+                            userJson = response.getJSONObject(0);
+                            user = new User(userJson);
                         } catch(JSONException e) {
                             user = null;
-                        } finally {
-                            postResponse.afterGetResponseSuccess(user);
                         }
+
+                        // get token if available
+                        if (user != null) {
+                            try {
+                                Log.d(TAG, "onResponse: " + userJson.toString());
+                                JSONObject tokenJson = userJson.getJSONObject("token");
+                                Log.d(TAG, "onResponse: " + tokenJson.toString());
+                                tokenId = tokenJson.getInt("id");
+                            } catch (JSONException e) {
+                                Log.d(TAG, "onResponse: tokenId not found!!!");
+                                e.printStackTrace();
+                                tokenId = Properties.TOKEN_ID_NULL;
+                            }
+                        }
+                        postResponse.afterGetResponseSuccess(user, tokenId);
                     }
                 },
                 new Response.ErrorListener() {

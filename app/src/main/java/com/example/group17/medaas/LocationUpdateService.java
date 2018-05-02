@@ -57,13 +57,18 @@ public class LocationUpdateService extends JobService {
                                         new OnPutUserResponseSuccess() {
                                             @Override
                                             public void afterPostResponseSuccess(JSONObject response) {
-                                                Log.d(TAG, "afterPostResponseSuccess: " + response.toString());
+                                                if (response == null) {
+                                                    Log.d(TAG, "afterPostResponseSuccess: Volley error in location update!");
+                                                } else {
+                                                    Log.d(TAG, "afterPostResponseSuccess: " + response.toString());
+                                                }
                                                 jobFinished(params, true);
                                             }
                                         });
 
                             } else {
-                                Log.e(TAG, "No updates possible: Location is NULL");
+                                Log.d(TAG, "onSuccess: NULL Location. No updates to server. Rescheduling job...");
+                                jobFinished(params, true);
                             }
                         }
                     });
@@ -76,4 +81,49 @@ public class LocationUpdateService extends JobService {
     public boolean onStopJob(JobParameters params) {
         return true;
     }
+
+    public static boolean scheduleLocationUpdates(User user, final ComponentName name, final JobScheduler jobScheduler) {
+//        final ComponentName name = new ComponentName(this, LocationUpdateService.class);
+
+        // create user bundle
+        Gson gson = new Gson();
+        String userJson = gson.toJson(user);
+
+        PersistableBundle bundle = new PersistableBundle();
+        bundle.putString("user", userJson);
+
+        // create JobInfo Object
+        final JobInfo jobInfo = new JobInfo.Builder(123, name)
+                .setMinimumLatency(10000)
+                .setOverrideDeadline(60000)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setPersisted(true)
+                .setExtras(bundle)
+                .build();
+
+        // schedule
+//        final JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        int result;
+        if (jobScheduler != null) {
+            result = jobScheduler.schedule(jobInfo);
+        } else {
+            Log.d("", "scheduleLocationUpdates: Job Scheduler Null");
+            return false;
+        }
+
+        if (result == JobScheduler.RESULT_SUCCESS) {
+            Log.d("", "scheduleLocationUpdates: Scheduled Job Successfully");
+            return true;
+        } else {
+            Log.d("", "scheduleLocationUpdates: Job Scheduling failed");
+            return false;
+        }
+    }
+
+    public static void stopLocationUpdates(final JobScheduler jobScheduler) {
+//        final JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.cancelAll();
+        Log.d("", "stopLocationUpdates: All Jobs stopped");
+    }
+
 }
