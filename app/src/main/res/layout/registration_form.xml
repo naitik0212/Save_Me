@@ -6,7 +6,8 @@
     android:layout_height="fill_parent" >
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#324646">
 
 
     <TextView
@@ -16,8 +17,9 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25dp"
+        android:textColor="#ffffff"
+        android:textColorHint="#fff"
         android:text="First Name"
-        android:textColor="@color/colorPrimary"
         android:textSize="50px" />
 
     <EditText
@@ -28,7 +30,8 @@
         android:layout_centerHorizontal="true"
         android:ems="10"
         android:hint="Enter Your Name"
-        android:textColor="@color/colorPrimary"
+        android:textColor="#ffffff"
+        android:textColorHint="#fff"
         android:inputType="text" />
 
     <TextView
@@ -38,7 +41,8 @@
         android:layout_centerHorizontal="true"
         android:text="Last Name"
         android:layout_below="@+id/firstnameText"
-        android:textColor="@color/colorPrimary"
+        android:textColor="#ffffff"
+        android:textColorHint="#fff"
         android:textSize="50px" />
 
     <EditText
@@ -47,7 +51,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/lastname"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/colorPrimary"
+        android:textColor="#ffffff"
+        android:textColorHint="#fff"
         android:ems="10"
         android:hint="Enter Your Last Name"
         android:inputType="text|textEmailAddress|textPersonName" />
@@ -59,7 +64,8 @@
         android:layout_centerHorizontal="true"
         android:text="Age"
         android:layout_below="@+id/lastnametext"
-        android:textColor="@color/colorPrimary"
+        android:textColor="#ffffff"
+        android:textColorHint="#fff"
         android:textSize="50px" />
 
     <EditText
@@ -70,7 +76,8 @@
         android:layout_centerHorizontal="true"
         android:ems="10"
         android:hint="Enter Your Age"
-        android:textColor="@color/colorPrimary"
+        android:textColor="#ffffff"
+        android:textColorHint="#fff"
         android:inputType="number" />
 
     <TextView
@@ -80,7 +87,8 @@
         android:layout_centerHorizontal="true"
         android:text="Address"
         android:layout_below="@+id/agetext"
-        android:textColor="@color/colorPrimary"
+        android:textColorHint="#fff"
+        android:textColor="#ffffff"
         android:textSize="50px" />
 
     <EditText
@@ -91,7 +99,8 @@
         android:layout_centerHorizontal="true"
         android:ems="10"
         android:hint="Enter Your Address"
-        android:textColor="@color/colorPrimary"
+        android:textColorHint="#fff"
+        android:textColor="#ffffff"
         android:inputType="text" />
 
     <TextView
@@ -102,14 +111,16 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:text="Your Profession?"
-        android:textColor="@color/colorPrimary"
+        android:textColorHint="#fff"
+        android:textColor="#ffffff"
         android:textSize="40px" />
 
     <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/colorPrimary"
+        android:textColor="#ffffff"
+        android:textColorHint="#fff"
         android:layout_below="@+id/isDoc"
         android:id="@+id/radioGroup">
 
@@ -120,8 +131,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/isDoc"
+            android:textColorHint="#fff"
             android:layout_alignStart="@+id/isDoc"
-            android:textColor="@color/colorPrimary"
+            android:textColor="#ffffff"
             android:layout_below="@+id/isDoc"
             android:text="Doctor" />
 
@@ -131,7 +143,8 @@
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/isDocYes"
             android:layout_alignStart="@+id/isDocYes"
-            android:textColor="@color/colorPrimary"
+            android:textColor="#ffffff"
+            android:textColorHint="#fff"
             android:layout_below="@+id/isDocYes"
             android:checked="true"
             android:text="Client" />
@@ -144,8 +157,9 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:text="Email"
+        android:textColorHint="#fff"
         android:layout_below="@+id/radioGroup"
-        android:textColor="@color/colorPrimary"
+        android:textColor="#ffffff"
         android:textSize="50px" />
 
     <EditText
@@ -155,7 +169,8 @@
         android:layout_below="@+id/loginid"
         android:layout_centerHorizontal="true"
         android:ems="10"
-        android:textColor="@color/colorPrimary"
+        android:textColorHint="#fff"
+        android:textColor="#ffffff"
         android:hint="Enter Your EmailId"
         android:inputType="text|textEmailAddress|textPersonName" />
 
@@ -167,7 +182,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="21dp"
         android:text="Password"
-        android:textColor="@color/colorPrimary"
+        android:textColorHint="#fff"
+        android:textColor="#ffffff"
         android:textSize="50px" />
 
     <EditText
@@ -177,8 +193,9 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/password_text"
         android:ems="10"
+        android:textColorHint="#fff"
         android:hint="Enter Password"
-        android:textColor="@color/colorPrimary"
+        android:textColor="#ffffff"
         android:inputType="textPersonName"
         android:password="true" />
 
@@ -191,7 +208,8 @@
         android:layout_centerHorizontal="true"
         android:text="Contact"
         android:layout_below="@+id/password_input"
-        android:textColor="@color/colorPrimary"
+        android:textColor="#ffffff"
+        android:textColorHint="#fff"
         android:textSize="50px" />
 
     <EditText
@@ -201,7 +219,8 @@
         android:layout_below="@+id/phone"
         android:layout_centerHorizontal="true"
         android:ems="10"
-        android:textColor="@color/colorPrimary"
+        android:textColor="#ffffff"
+        android:textColorHint="#fff"
         android:hint="Contact Number"
         android:inputType="number" />
 
@@ -212,7 +231,8 @@
         android:layout_centerHorizontal="true"
         android:text="Emergency contact"
         android:layout_below="@+id/phonenumber"
-        android:textColor="@color/colorPrimary"
+        android:textColor="#ffffff"
+        android:textColorHint="#fff"
         android:textSize="50px" />
 
     <EditText
@@ -221,9 +241,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/emergencyphone"
         android:layout_centerHorizontal="true"
-        android:textColor="@color/colorPrimary"
+        android:textColor="#ffffff"
         android:ems="10"
         android:hint="Enter Emergency contact"
+        android:textColorHint="#fff"
         android:inputType="number" />
 
 
@@ -246,10 +267,12 @@
         android:id="@+id/submit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#ffffff"
+        android:textColorHint="#fff"
         android:layout_below="@+id/emergencyphonenumber"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="17dp"
-        android:background="@drawable/buttoncolors"
+        android:background="@drawable/buttoncolors2"
         android:text="Submit" />
 
 

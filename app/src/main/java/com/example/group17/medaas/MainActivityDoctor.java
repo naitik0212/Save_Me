@@ -1,15 +1,20 @@
 package com.example.group17.medaas;
 
+import android.*;
 import android.app.job.JobScheduler;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +39,8 @@ public class MainActivityDoctor extends AppCompatActivity {
 
 
     private TextView reqDetailTV = null;
-    private Button saveMe;
+    private ImageButton saveMe;
+    private ImageButton call911;
     private Button cancelSaveMe;
     private Button logout;
     private Button completedSaveMe;
@@ -52,14 +58,16 @@ public class MainActivityDoctor extends AppCompatActivity {
         // retrive active session if it exists
         Properties.retriveSessionFromFile();
 
-        saveMe = (Button) findViewById(R.id.SaveMe);
+        saveMe = (ImageButton) findViewById(R.id.SaveMe);
         cancelSaveMe = (Button) findViewById(R.id.CancelSaveMe);
+        call911 = (ImageButton) findViewById(R.id.call911);
         completedSaveMe = (Button) findViewById(R.id.CompleteSaveMe);
         logout = (Button) findViewById(R.id.Logout);
         acceptSaveMe = (Button) findViewById(R.id.Accept);
         denySaveMe = (Button) findViewById(R.id.Deny);
 
         reqDetailTV = (TextView) findViewById(R.id.ReqDetail);
+        reqDetailTV.setMovementMethod(new ScrollingMovementMethod());
 
         logout.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -83,6 +91,31 @@ public class MainActivityDoctor extends AppCompatActivity {
                 finish();
             }
         });
+
+        final Context context = this;
+
+        call911.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:2138338030"));
+                if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                startActivity(callIntent);
+            }
+        });
+
 
         cancelSaveMe.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -268,29 +301,32 @@ public class MainActivityDoctor extends AppCompatActivity {
 
     private void updateUI_STATUS_READY() {
         saveMe.setVisibility(View.VISIBLE);
-        cancelSaveMe.setVisibility(View.GONE);
-        completedSaveMe.setVisibility(View.GONE);
-        acceptSaveMe.setVisibility(View.GONE);
-        denySaveMe.setVisibility(View.GONE);
+        saveMe.setEnabled(true);
+        cancelSaveMe.setVisibility(View.INVISIBLE);
+        completedSaveMe.setVisibility(View.INVISIBLE);
+        acceptSaveMe.setVisibility(View.INVISIBLE);
+        denySaveMe.setVisibility(View.INVISIBLE);
         Log.d("", "updateUI_STATUS_READY: updating text view...");
         reqDetailTV.setText("Hello Dr. " + Properties.user.getLastName() + ", you will receive patient emergencies here.\n\n\"Medical emergency? Click on SAVE ME button now!");
     }
 
     private void updateUI_CLIENT_REQUESTED_OUTGOING() {
-        saveMe.setVisibility(View.GONE);
+        saveMe.setVisibility(View.VISIBLE);
+        saveMe.setEnabled(false);
         cancelSaveMe.setVisibility(View.VISIBLE);
-        completedSaveMe.setVisibility(View.GONE);
-        acceptSaveMe.setVisibility(View.GONE);
-        denySaveMe.setVisibility(View.GONE);
+        completedSaveMe.setVisibility(View.INVISIBLE);
+        acceptSaveMe.setVisibility(View.INVISIBLE);
+        denySaveMe.setVisibility(View.INVISIBLE);
         reqDetailTV.setText("Searching doctors in vicinity...\n\n ...click Cancel to cancel the request.");
     }
 
     private void updateUI_DOCTOR_RESPONDED() {
-        saveMe.setVisibility(View.GONE);
+        saveMe.setVisibility(View.VISIBLE);
+        saveMe.setEnabled(false);
         cancelSaveMe.setVisibility(View.VISIBLE);
         completedSaveMe.setVisibility(View.VISIBLE);
-        acceptSaveMe.setVisibility(View.GONE);
-        denySaveMe.setVisibility(View.GONE);
+        acceptSaveMe.setVisibility(View.INVISIBLE);
+        denySaveMe.setVisibility(View.INVISIBLE);
 
         String text = "Following doctor will attend you: \n\n";
         text += Properties.clientDoctorSession.getDoctorUser().getFirstName() + " " +
@@ -303,8 +339,9 @@ public class MainActivityDoctor extends AppCompatActivity {
 
     private void updateUI_CLIENT_REQUESTED() {
         saveMe.setVisibility(View.VISIBLE);
-        cancelSaveMe.setVisibility(View.GONE);
-        completedSaveMe.setVisibility(View.GONE);
+        saveMe.setEnabled(false);
+        cancelSaveMe.setVisibility(View.INVISIBLE);
+        completedSaveMe.setVisibility(View.INVISIBLE);
         acceptSaveMe.setVisibility(View.VISIBLE);
         denySaveMe.setVisibility(View.VISIBLE);
 
@@ -318,10 +355,11 @@ public class MainActivityDoctor extends AppCompatActivity {
 
     private void updateUI_DOCTOR_RESPONDED_OUTGOING() {
         saveMe.setVisibility(View.VISIBLE);
+        saveMe.setEnabled(false);
         cancelSaveMe.setVisibility(View.VISIBLE);
         completedSaveMe.setVisibility(View.VISIBLE);
-        acceptSaveMe.setVisibility(View.GONE);
-        denySaveMe.setVisibility(View.GONE);
+        acceptSaveMe.setVisibility(View.INVISIBLE);
+        denySaveMe.setVisibility(View.INVISIBLE);
 
         String text = "You are attending this patient...: \n\n";
         text += Properties.clientDoctorSession.getClientUser().getFirstName() + " " +
@@ -333,11 +371,12 @@ public class MainActivityDoctor extends AppCompatActivity {
     }
 
     private void updateUI_DOCTOR_CANCELLED() {
-        saveMe.setVisibility(View.GONE);
+        saveMe.setVisibility(View.VISIBLE);
+        saveMe.setEnabled(false);
         cancelSaveMe.setVisibility(View.VISIBLE);
-        completedSaveMe.setVisibility(View.GONE);
-        acceptSaveMe.setVisibility(View.GONE);
-        denySaveMe.setVisibility(View.GONE);
+        completedSaveMe.setVisibility(View.INVISIBLE);
+        acceptSaveMe.setVisibility(View.INVISIBLE);
+        denySaveMe.setVisibility(View.INVISIBLE);
         reqDetailTV.setText("Doctor is not available.\nNotifying other doctors in vicinity...");
     }
 

@@ -44,6 +44,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Long id = Long.parseLong(map.get("id"));
 
         Properties.retriveSessionFromFile();
+        Properties.retriveUserFromFile();
 
         if (messageBody.equals(CLIENT_REQUEST)) {
             if (Properties.user == null || !Properties.user.getUserType().equals("doctor") || Properties.clientDoctorSession == null || !Properties.clientDoctorSession.getStatus().equals(ClientDoctorSession.STATUS_READY)) return;
@@ -135,10 +136,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         notificationBuilder.setContentTitle("SaveMe: ");
         notificationBuilder.setContentText(messageBody);
         notificationBuilder.setAutoCancel(true);
-        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+        notificationBuilder.setSmallIcon(R.mipmap.save_me_logo);
         notificationBuilder.setContentIntent(pendingIntent);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0,notificationBuilder.build());
     }
-
 }

@@ -1,14 +1,20 @@
 package com.example.group17.medaas;
 
 import android.app.job.JobScheduler;
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private final int SCREEN_REFRESH_RATE_IN_MILLIS = 300;
 
     private TextView docListTV = null;
-    private Button saveMe;
+    private ImageButton saveMe;
+    private ImageButton call911;
     private Button cancelSaveMe;
     private Button logout;
     private Button completedSaveMe;
@@ -49,12 +56,14 @@ public class MainActivity extends AppCompatActivity {
         // retrive active session if it exists
         Properties.retriveSessionFromFile();
 
-        saveMe = (Button) findViewById(R.id.SaveMeUser);
+        saveMe = (ImageButton) findViewById(R.id.SaveMeUser);
+        call911 = (ImageButton) findViewById(R.id.call911);
         cancelSaveMe = (Button) findViewById(R.id.CancelSaveMeUser);
         completedSaveMe = (Button) findViewById(R.id.CompleteSaveMeUser);
         logout = (Button) findViewById(R.id.LogoutUser);
 
         docListTV = (TextView) findViewById(R.id.DocList);
+        docListTV.setMovementMethod(new ScrollingMovementMethod());
 
         logout.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -134,6 +143,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        final Context context = this;
+
+        call911.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:2138338030"));
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                startActivity(callIntent);
+            }
+        });
+
         // Start thread to check status and update screen accordingly
         updateTracker = new Thread(new Runnable() {
             @Override
@@ -208,20 +239,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateUI_STATUS_READY() {
         saveMe.setVisibility(View.VISIBLE);
-        cancelSaveMe.setVisibility(View.GONE);
-        completedSaveMe.setVisibility(View.GONE);
-        docListTV.setText("Medical emergency? Click on SAVE ME button now!");
+        saveMe.setEnabled(true);
+        cancelSaveMe.setVisibility(View.INVISIBLE);
+        completedSaveMe.setVisibility(View.INVISIBLE);
+        docListTV.setText("We are here for your safety");
     }
 
     private void updateUI_CLIENT_REQUESTED() {
-        saveMe.setVisibility(View.GONE);
+        saveMe.setVisibility(View.VISIBLE);
+        saveMe.setEnabled(false);
         cancelSaveMe.setVisibility(View.VISIBLE);
-        completedSaveMe.setVisibility(View.GONE);
+        completedSaveMe.setVisibility(View.INVISIBLE);
         docListTV.setText("Searching doctors in vicinity...\n\n ...click Cancel to cancel the request.");
     }
 
     private void updateUI_DOCTOR_RESPONDED() {
-        saveMe.setVisibility(View.GONE);
+        saveMe.setVisibility(View.VISIBLE);
+        saveMe.setEnabled(false);
         cancelSaveMe.setVisibility(View.VISIBLE);
         completedSaveMe.setVisibility(View.VISIBLE);
 
@@ -234,9 +268,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateUI_DOCTOR_CANCELLED() {
-        saveMe.setVisibility(View.GONE);
+        saveMe.setVisibility(View.VISIBLE);
+        saveMe.setEnabled(false);
         cancelSaveMe.setVisibility(View.VISIBLE);
-        completedSaveMe.setVisibility(View.GONE);
+        completedSaveMe.setVisibility(View.INVISIBLE);
         docListTV.setText("Doctor is not available.\nNotifying other doctors in vicinity...");
     }
 

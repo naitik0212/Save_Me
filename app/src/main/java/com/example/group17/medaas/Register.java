@@ -202,6 +202,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
             Manifest.permission.INTERNET,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CALL_PHONE
     };
 
     private boolean checkPermissions() {
@@ -280,12 +281,12 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                 new AlertDialog.Builder(this)
                         .setTitle("Sorry Please provide access")
                         .setMessage("Not good for your safety")
-                        .setPositiveButton("Provide Storage Access", new DialogInterface.OnClickListener() {
+                        .setPositiveButton("Provide Call Access", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown
                                 ActivityCompat.requestPermissions(Register.this,
-                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                        new String[]{Manifest.permission.CALL_PHONE},
                                         100);
                             }
                         })

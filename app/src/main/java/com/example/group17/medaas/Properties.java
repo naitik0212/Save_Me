@@ -125,6 +125,8 @@ public class Properties {
     }
 
     public static void retriveSessionFromFile() {
+        if (Properties.clientDoctorSession != null) return;
+
         File file = new File(Properties.activeSessionFile);
 
         if (!file.exists()) {
@@ -149,6 +151,35 @@ public class Properties {
         } catch (IOException e) {
             Log.d("", "checkCredentials: " + e.getMessage());
             Properties.clientDoctorSession = null;
+        }
+    }
+
+    public static void retriveUserFromFile() {
+        if (Properties.user != null) return;
+
+        File file = new File(Properties.credFile);
+
+        if (!file.exists()) {
+            Properties.user = null;
+            return;
+        }
+
+        //Read text from file
+        StringBuilder text = new StringBuilder();
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
+            }
+            br.close();
+
+            Gson gson = new Gson();
+            Properties.user = gson.fromJson(text.toString(), User.class);
+        } catch (IOException e) {
+            Log.d("", "checkCredentials: " + e.getMessage());
         }
     }
 }
