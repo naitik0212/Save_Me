@@ -9,6 +9,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -47,7 +49,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText Password;
     private EditText contact;
     private EditText emergencycontact;
+    private AppCompatButton appCompatButtonRegister;
 
+    private AppCompatTextView textViewLinkLogin;
     //Location
     Location mLocation = null;
 
@@ -57,20 +61,29 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.registration_form);
         nameUpdateService = new ComponentName(this, LocationUpdateService.class);
 
-        final Button submitButton = (Button) findViewById(R.id.submit_button);
-        firstname = (EditText) findViewById(R.id.firstnameText);
-        lastname = (EditText) findViewById(R.id.lastnametext);
-        Age = (EditText) findViewById(R.id.agetext);
-        Address = (EditText) findViewById(R.id.addresstext);
-        Email = (EditText) findViewById(R.id.loginText);
-        Password = (EditText) findViewById(R.id.password_input);
-        contact = (EditText) findViewById(R.id.phonenumber);
-        emergencycontact = (EditText) findViewById(R.id.emergencyphonenumber);
+        appCompatButtonRegister = (AppCompatButton) findViewById(R.id.appCompatButtonRegister);
+        firstname = (EditText) findViewById(R.id.textInputEditTextFirstName);
+        lastname = (EditText) findViewById(R.id.textInputEditTextLastName);
+        Age = (EditText) findViewById(R.id.textInputEditTextAge);
+        Address = (EditText) findViewById(R.id.textInputEditTextAddress);
+        Email = (EditText) findViewById(R.id.textInputEditTextEmail);
+        Password = (EditText) findViewById(R.id.textInputEditTextPassword);
+        contact = (EditText) findViewById(R.id.textInputEditTextPhone);
+        emergencycontact = (EditText) findViewById(R.id.textInputEditTextEmergencyContact);
+        textViewLinkLogin = (AppCompatTextView) findViewById(R.id.appCompatTextViewLoginLink);
+
+        textViewLinkLogin.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+                Intent activityChangeIntent = new Intent(RegisterActivity.this, LoginActivity.class);
+                RegisterActivity.this.startActivity(activityChangeIntent);
+            }
+        });
 
         //update location
         fetchLocation();
 
-        submitButton.setOnClickListener(new View.OnClickListener() {
+        appCompatButtonRegister.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
 

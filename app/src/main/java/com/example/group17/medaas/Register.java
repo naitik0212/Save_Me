@@ -8,6 +8,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +20,6 @@ import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,8 +32,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
-        final Button Register = (Button) findViewById(R.id.Register);
-        final Button Login = (Button) findViewById(R.id.login_button);
+        final Button Register = (Button) findViewById(R.id.register);
+        final Button Login = (Button) findViewById(R.id.login);
 
         Register.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -46,7 +46,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         Login.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
-                Intent activityChangeIntent = new Intent(Register.this, loginActivity.class);
+                Intent activityChangeIntent = new Intent(Register.this, LoginActivity.class);
                 Register.this.startActivity(activityChangeIntent);
             }
         });

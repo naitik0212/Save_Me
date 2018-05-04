@@ -5,11 +5,14 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.group17.medaas.API.model.User;
@@ -21,27 +24,33 @@ import com.example.group17.medaas.API.user.UserGet;
 import com.example.group17.medaas.API.user.UserPost;
 import com.example.group17.medaas.API.user.callback.OnGetUserResponseSuccess;
 import com.example.group17.medaas.API.user.callback.OnPostUserLoginResponseSuccess;
+import com.example.group17.medaas.helpers.InputValidation;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
 /**
  * Created by naitikshah on 4/16/18.
  */
 
-public class loginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     private ComponentName nameUpdateService;
 
-    private final AppCompatActivity activity = loginActivity.this;
-    private EditText email_et = null;
-    private EditText password_et = null;
+    private final AppCompatActivity activity = LoginActivity.this;
+    private NestedScrollView nestedScrollView;
+
+    private TextInputLayout textInputLayoutEmail;
+    private TextInputLayout textInputLayoutPassword;
+
+    private TextInputEditText textInputEditTextEmail;
+    private TextInputEditText textInputEditTextPassword;
+
+    private AppCompatButton appCompatButtonLogin;
+
+    private AppCompatTextView textViewLinkRegister;
+
+    private InputValidation inputValidation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,23 +59,30 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
 
         nameUpdateService = new ComponentName(this, LocationUpdateService.class);
 
-        final Button Register = (Button) findViewById(R.id.Register);
-        final Button Login = (Button) findViewById(R.id.submit_button);
-        email_et = (EditText) findViewById(R.id.loginText);
-        password_et = (EditText) findViewById(R.id.password_input);
+        nestedScrollView = (NestedScrollView) findViewById(R.id.nestedScrollView);
 
-        Register.setOnClickListener(new View.OnClickListener() {
+        textInputLayoutEmail = (TextInputLayout) findViewById(R.id.textInputLayoutEmail);
+        textInputLayoutPassword = (TextInputLayout) findViewById(R.id.textInputLayoutPassword);
+
+        textInputEditTextEmail = (TextInputEditText) findViewById(R.id.textInputEditTextEmail);
+        textInputEditTextPassword = (TextInputEditText) findViewById(R.id.textInputEditTextPassword);
+
+        appCompatButtonLogin = (AppCompatButton) findViewById(R.id.appCompatButtonLogin);
+
+        textViewLinkRegister = (AppCompatTextView) findViewById(R.id.textViewLinkRegister);
+
+        textViewLinkRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
-                Intent activityChangeIntent = new Intent(loginActivity.this, RegisterActivity.class);
-                loginActivity.this.startActivity(activityChangeIntent);
+                Intent activityChangeIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+                LoginActivity.this.startActivity(activityChangeIntent);
             }
         });
 
-        Login.setOnClickListener(new View.OnClickListener() {
+        appCompatButtonLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String email = email_et.getText().toString();
-                String password = password_et.getText().toString();
+                String email = textInputEditTextEmail.getText().toString().trim();
+                String password = textInputEditTextPassword.getText().toString().trim();
 
                 UserPost userPost = new UserPost();
                 userPost.requestLogin(getApplicationContext(), email, password,
@@ -115,14 +131,14 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
                                                             // go to main screen
                                                             Intent intent = null;
                                                             if (Properties.user.getUserType().equals("client")) {
-                                                                intent = new Intent(loginActivity.this, MainActivity.class);
+                                                                intent = new Intent(LoginActivity.this, MainActivity.class);
                                                             } else if (Properties.user.getUserType().equals("doctor")){
-                                                                intent = new Intent(loginActivity.this, MainActivityDoctor.class);
+                                                                intent = new Intent(LoginActivity.this, MainActivityDoctor.class);
                                                             } else {
                                                                 return;
                                                             }
                                                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                            loginActivity.this.startActivity(intent);
+                                                            LoginActivity.this.startActivity(intent);
                                                             finish();
                                                         }
                                                     });
@@ -137,12 +153,12 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
                                                             // go to main screen
                                                             Intent intent = null;
                                                             if (Properties.user.getUserType().equals("client")) {
-                                                                intent = new Intent(loginActivity.this, MainActivity.class);
+                                                                intent = new Intent(LoginActivity.this, MainActivity.class);
                                                             } else if (Properties.user.getUserType().equals("doctor")){
-                                                                intent = new Intent(loginActivity.this, MainActivityDoctor.class);
+                                                                intent = new Intent(LoginActivity.this, MainActivityDoctor.class);
                                                             }
                                                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                            loginActivity.this.startActivity(intent);
+                                                            LoginActivity.this.startActivity(intent);
                                                             finish();
                                                         }
                                                     });
