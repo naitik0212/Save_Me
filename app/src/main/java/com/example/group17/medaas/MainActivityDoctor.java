@@ -15,14 +15,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.group17.medaas.API.GoogleETA.ETAGet;
+import com.example.group17.medaas.API.GoogleETA.callback.OnGetETAResponseSuccess;
 import com.example.group17.medaas.API.model.User;
 import com.example.group17.medaas.API.save.SaveMeGet;
 import com.example.group17.medaas.API.save.SaveMePost;
 import com.example.group17.medaas.API.save.callback.OnGetSaveMeResponseSuccess;
 import com.example.group17.medaas.API.save.callback.OnPostSaveMeResponseSuccess;
+import com.example.group17.medaas.API.user.UserGet;
+import com.example.group17.medaas.API.user.callback.OnGetUserResponseSuccess;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -32,10 +37,14 @@ import java.io.File;
 public class MainActivityDoctor extends AppCompatActivity {
     // Thread handler
     private Handler mHandler;
-    private String currentStatus = "force update screen";
+    private String currentStatus;
     private boolean updateUI = true;
     private Thread updateTracker;
     private final int SCREEN_REFRESH_RATE_IN_MILLIS = 300;
+
+    // update thread for ETA
+    private Thread threadETA;
+    private int maxETA = 0;
 
 
     private TextView reqDetailTV = null;
@@ -46,6 +55,8 @@ public class MainActivityDoctor extends AppCompatActivity {
     private Button completedSaveMe;
     private Button acceptSaveMe;
     private Button denySaveMe;
+    private ProgressBar etaBar;
+    private TextView etaText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,16 +66,20 @@ public class MainActivityDoctor extends AppCompatActivity {
         // Initializing handler here attaches it to this thread
         mHandler = new Handler();
 
+        currentStatus = "force update ui";
+
         // retrive active session if it exists
         Properties.retriveSessionFromFile();
 
-        saveMe = (ImageButton) findViewById(R.id.SaveMe);
-        cancelSaveMe = (Button) findViewById(R.id.CancelSaveMe);
+        saveMe = (ImageButton) findViewById(R.id.SaveMeDoctor);
+        cancelSaveMe = (Button) findViewById(R.id.CancelSaveMeDoctor);
         call911 = (ImageButton) findViewById(R.id.call911);
-        completedSaveMe = (Button) findViewById(R.id.CompleteSaveMe);
+        completedSaveMe = (Button) findViewById(R.id.CompleteSaveMeDoctor);
         logout = (Button) findViewById(R.id.Logout);
         acceptSaveMe = (Button) findViewById(R.id.Accept);
         denySaveMe = (Button) findViewById(R.id.Deny);
+        etaBar = (ProgressBar) findViewById(R.id.ETApbDoctor);
+        etaText = (TextView) findViewById(R.id.ETADoctor);
 
         reqDetailTV = (TextView) findViewById(R.id.ReqDetail);
         reqDetailTV.setMovementMethod(new ScrollingMovementMethod());
@@ -226,7 +241,6 @@ public class MainActivityDoctor extends AppCompatActivity {
 
                     // detect change in status and update
                     if (!newStatus.equals(prevStatus)) {
-                        currentStatus = newStatus;
                         if (newStatus.equals(ClientDoctorSession.STATUS_READY)) {
                             // call ui update for status ready
                             mHandler.post(new Runnable() {
@@ -259,6 +273,7 @@ public class MainActivityDoctor extends AppCompatActivity {
                                     updateUI_DOCTOR_RESPONDED();
                                 }
                             });
+                            threadETA.start();
                         } else if (newStatus.equals(ClientDoctorSession.STATUS_DOCTOR_RESPONDED_OUTGOING)) {
                             // call ui update for status doctor responded
                             mHandler.post(new Runnable() {
@@ -267,6 +282,7 @@ public class MainActivityDoctor extends AppCompatActivity {
                                     updateUI_DOCTOR_RESPONDED_OUTGOING();
                                 }
                             });
+                            threadETA.start();
                         } else if (newStatus.equals(ClientDoctorSession.STATUS_DOCTOR_CANCELLED)) {
                             // call ui update for status doctor cancelled
                             mHandler.post(new Runnable() {
@@ -276,6 +292,7 @@ public class MainActivityDoctor extends AppCompatActivity {
                                 }
                             });
                         }
+                        currentStatus = newStatus;
                     }
                     // check if doctor's list is received...
                     if (newStatus.equals(ClientDoctorSession.STATUS_CLIENT_REQUESTED_OUTGOING) && Properties.clientDoctorSession.getDoctorsList() != null) {
@@ -297,32 +314,101 @@ public class MainActivityDoctor extends AppCompatActivity {
             }
         });
         updateTracker.start();
+
+        // define ETA update thread
+        threadETA = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(Properties.clientDoctorSession.getStatus().equals(ClientDoctorSession.STATUS_DOCTOR_RESPONDED_OUTGOING) ||
+                        Properties.clientDoctorSession.getStatus().equals(ClientDoctorSession.STATUS_DOCTOR_RESPONDED )) {
+
+                    // update locations
+                    new UserGet().request(getApplicationContext(), Properties.clientDoctorSession.getDoctorUser().getId(),
+                            new OnGetUserResponseSuccess() {
+                                @Override
+                                public void afterGetResponseSuccess(User user, int tokenId) {
+                                    Properties.clientDoctorSession.setDoctorUser(user);
+                                }
+                            }
+                    );
+                    new UserGet().request(getApplicationContext(), Properties.clientDoctorSession.getClientUser().getId(),
+                            new OnGetUserResponseSuccess() {
+                                @Override
+                                public void afterGetResponseSuccess(User user, int tokenId) {
+                                    Properties.clientDoctorSession.setClientUser(user);
+                                    Properties.saveToFile(new Gson().toJson(Properties.clientDoctorSession), Properties.credDir, Properties.activeSessionFile);
+                                }
+                            }
+                    );
+
+                    // update ETA
+                    ETAGet etaGet = new ETAGet();
+                    etaGet.request(getApplicationContext(), Properties.clientDoctorSession.getDoctorUser().getLocation(), Properties.clientDoctorSession.getClientUser().getLocation(),
+                            new OnGetETAResponseSuccess() {
+                                @Override
+                                public void afterGetResponseSuccess(int ETA) {
+                                    if (ETA != Properties.ETA_NULL) {
+                                        Properties.clientDoctorSession.setETA(ETA);
+                                        mHandler.post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (Properties.clientDoctorSession.getETA() == Properties.ETA_NULL) return;
+                                                String etaString = "ETA: ";
+                                                etaString += Integer.toString((int) Properties.clientDoctorSession.getETA() / 60) + " min ";
+                                                etaString += Integer.toString((int) Properties.clientDoctorSession.getETA() % 60) + " s" ;
+                                                etaText.setText(etaString);
+                                                if (maxETA < Properties.clientDoctorSession.getETA()) {
+                                                    maxETA = Properties.clientDoctorSession.getETA();
+                                                    etaBar.setMax(maxETA);
+                                                }
+                                                etaBar.setProgress(Properties.clientDoctorSession.getETA());
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
     private void updateUI_STATUS_READY() {
         saveMe.setVisibility(View.VISIBLE);
         saveMe.setEnabled(true);
+        etaText.setVisibility(View.INVISIBLE);
+        etaText.setText("");
+        etaBar.setVisibility(View.INVISIBLE);
         cancelSaveMe.setVisibility(View.INVISIBLE);
         completedSaveMe.setVisibility(View.INVISIBLE);
         acceptSaveMe.setVisibility(View.INVISIBLE);
         denySaveMe.setVisibility(View.INVISIBLE);
         Log.d("", "updateUI_STATUS_READY: updating text view...");
-        reqDetailTV.setText("Hello Dr. " + Properties.user.getLastName() + ", you will receive patient emergencies here.\n\n\"Medical emergency? Click on SAVE ME button now!");
+        reqDetailTV.setText("Hello Dr. " + Properties.user.getFirstName() + " " + Properties.user.getLastName() + "\nYou will receive patient emergencies here.\n\n\"Medical emergency? Click on SAVE ME button now!");
     }
 
     private void updateUI_CLIENT_REQUESTED_OUTGOING() {
         saveMe.setVisibility(View.VISIBLE);
         saveMe.setEnabled(false);
+        etaText.setVisibility(View.INVISIBLE);
+        etaText.setText("");
+        etaBar.setVisibility(View.INVISIBLE);
         cancelSaveMe.setVisibility(View.VISIBLE);
         completedSaveMe.setVisibility(View.INVISIBLE);
         acceptSaveMe.setVisibility(View.INVISIBLE);
         denySaveMe.setVisibility(View.INVISIBLE);
-        reqDetailTV.setText("Searching doctors in vicinity...\n\n ...click Cancel to cancel the request.");
+        reqDetailTV.setText("Searching doctors in vicinity...");
     }
 
     private void updateUI_DOCTOR_RESPONDED() {
         saveMe.setVisibility(View.VISIBLE);
         saveMe.setEnabled(false);
+        etaText.setVisibility(View.VISIBLE);
+        etaBar.setVisibility(View.VISIBLE);
         cancelSaveMe.setVisibility(View.VISIBLE);
         completedSaveMe.setVisibility(View.VISIBLE);
         acceptSaveMe.setVisibility(View.INVISIBLE);
@@ -332,7 +418,6 @@ public class MainActivityDoctor extends AppCompatActivity {
         text += Properties.clientDoctorSession.getDoctorUser().getFirstName() + " " +
                 Properties.clientDoctorSession.getDoctorUser().getLastName() + " " +
                 Properties.clientDoctorSession.getDoctorUser().getPhoneNumber() + "\n";
-        text += "...click Cancel to cancel the request, or Completed to finish the request.";
         reqDetailTV.setText(text);
     }
 
@@ -340,6 +425,9 @@ public class MainActivityDoctor extends AppCompatActivity {
     private void updateUI_CLIENT_REQUESTED() {
         saveMe.setVisibility(View.VISIBLE);
         saveMe.setEnabled(false);
+        etaText.setVisibility(View.INVISIBLE);
+        etaText.setText("");
+        etaBar.setVisibility(View.INVISIBLE);
         cancelSaveMe.setVisibility(View.INVISIBLE);
         completedSaveMe.setVisibility(View.INVISIBLE);
         acceptSaveMe.setVisibility(View.VISIBLE);
@@ -349,13 +437,15 @@ public class MainActivityDoctor extends AppCompatActivity {
         text += Properties.clientDoctorSession.getClientUser().getFirstName() + " " +
                 Properties.clientDoctorSession.getClientUser().getLastName() + " " +
                 Properties.clientDoctorSession.getClientUser().getPhoneNumber() + "\n";
-        text += "...click Accept to attend the request, or Deny to reject.";
+
         reqDetailTV.setText(text);
     }
 
     private void updateUI_DOCTOR_RESPONDED_OUTGOING() {
         saveMe.setVisibility(View.VISIBLE);
         saveMe.setEnabled(false);
+        etaText.setVisibility(View.VISIBLE);
+        etaBar.setVisibility(View.VISIBLE);
         cancelSaveMe.setVisibility(View.VISIBLE);
         completedSaveMe.setVisibility(View.VISIBLE);
         acceptSaveMe.setVisibility(View.INVISIBLE);
@@ -366,13 +456,15 @@ public class MainActivityDoctor extends AppCompatActivity {
                 Properties.clientDoctorSession.getClientUser().getLastName() + " " +
                 Properties.clientDoctorSession.getClientUser().getPhoneNumber() + "\n\n";
 
-        text += "...click Cancel to cancel the request, or Completed to finish the request.";
         reqDetailTV.setText(text);
     }
 
     private void updateUI_DOCTOR_CANCELLED() {
         saveMe.setVisibility(View.VISIBLE);
         saveMe.setEnabled(false);
+        etaText.setVisibility(View.INVISIBLE);
+        etaText.setText("");
+        etaBar.setVisibility(View.INVISIBLE);
         cancelSaveMe.setVisibility(View.VISIBLE);
         completedSaveMe.setVisibility(View.INVISIBLE);
         acceptSaveMe.setVisibility(View.INVISIBLE);
@@ -388,8 +480,7 @@ public class MainActivityDoctor extends AppCompatActivity {
                         doc.getLastName() + " " +
                         doc.getPhoneNumber() + "\n";
             }
-            text += "... please wait until someone responds.\n\n";
-            text += "...click Cancel to cancel the request.";
+            text += "\n... please wait until someone responds.\n\n";
             reqDetailTV.setText(text);
         }
     }
@@ -399,6 +490,7 @@ public class MainActivityDoctor extends AppCompatActivity {
         updateUI = false;
         try {
             updateTracker.join();
+            threadETA.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

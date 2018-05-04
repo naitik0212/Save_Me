@@ -23,6 +23,7 @@ public class Properties {
     public static User user = null;
     public static ClientDoctorSession clientDoctorSession = null;
     public static final int TOKEN_ID_NULL = -1;
+    public static final int ETA_NULL = -1;
     public static int tokenId = TOKEN_ID_NULL;
 
     public static class RegistrationParameters {
