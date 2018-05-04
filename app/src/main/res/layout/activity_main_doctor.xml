@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="#324646">
@@ -19,24 +17,12 @@
         android:textSize="20dp"
         android:textStyle="italic" />
 
-
-    <!--<Button-->
-        <!--android:id="@+id/SaveMe"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentStart="true"-->
-        <!--android:layout_alignParentTop="true"-->
-        <!--android:background="@drawable/buttoncolors"-->
-        <!--android:text="Save Me" />-->
-
-
     <ImageButton
         android:id="@+id/SaveMeDoctor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_below="@+id/headertext"
-        android:layout_marginStart="32dp"
+        android:layout_centerHorizontal="true"
         android:background="#324646"
         android:contentDescription="Save Me"
         android:src="@drawable/ic_home_save_me" />
@@ -45,97 +31,81 @@
         android:id="@+id/ReqDetail"
         android:layout_width="match_parent"
         android:layout_height="90dp"
-        android:layout_below="@+id/SaveMeDoctor"
-        android:textColor="#ffffff"
-        android:layout_centerHorizontal="true"
-        android:text="..." />
+        android:layout_above="@+id/ETADoctor"
+        android:layout_alignParentStart="true"
+        android:text="..."
+        android:textColor="#ffffff" />
 
     <TextView
         android:id="@+id/ETADoctor"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_below="@+id/ReqDetail"
-        android:textColor="#ffffff"
-        android:layout_centerHorizontal="true"
-        android:text="..." />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="294dp"
+        android:text="..."
+        android:textColor="#ffffff" />
 
     <ProgressBar
         android:id="@+id/ETApbDoctor"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="fill_parent"
         android:layout_height="20dp"
-        android:layout_below="@+id/ETADoctor"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
+        android:layout_above="@+id/CancelSaveMeDoctor"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:id="@+id/CancelSaveMeDoctor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/SaveMeDoctor"
-        android:textColor="#ffffff"
-        android:layout_below="@+id/ETApbDoctor"
+        android:layout_above="@+id/call911"
+        android:layout_alignEnd="@+id/Accept"
         android:background="@drawable/buttoncolors1"
-        android:text="Cancel Request" />
+        android:text="Cancel Request"
+        android:textColor="#ffffff" />
 
     <Button
         android:id="@+id/CompleteSaveMeDoctor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/Deny"
-        android:textColor="#ffffff"
+        android:layout_alignStart="@+id/Deny"
         android:layout_below="@+id/ETApbDoctor"
         android:background="@drawable/buttoncolors2"
-        android:text="Complete Request" />
+        android:text="Complete Request"
+        android:textColor="#ffffff" />
 
     <Button
         android:id="@+id/Accept"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/Deny"
-        android:textColor="#ffffff"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="29dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="66dp"
+        android:layout_marginTop="259dp"
         android:background="@drawable/buttoncolors2"
-        android:text="Accept" />
+        android:text="Accept"
+        android:textColor="#ffffff" />
 
     <Button
         android:id="@+id/Deny"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/ReqDetail"
-        android:layout_alignStart="@+id/Accept"
-        android:textColor="#ffffff"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="45dp"
+        android:layout_alignTop="@+id/Accept"
+        android:layout_toEndOf="@+id/call911"
         android:background="@drawable/buttoncolors1"
-        android:text="Deny" />
+        android:text="Deny"
+        android:textColor="#ffffff" />
 
     <ImageButton
         android:id="@+id/call911"
-        android:layout_width="40dp"
-        android:layout_height="45dp"
-        android:layout_alignStart="@+id/CompleteSaveMeDoctor"
-        android:layout_alignTop="@+id/Logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="79dp"
         android:background="#324646"
         android:contentDescription="Call 911"
         android:src="@drawable/ic_call911" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/Logout"
-        android:layout_alignBottom="@+id/Logout"
-        android:layout_alignEnd="@+id/CancelSaveMeDoctor"
-        android:shadowColor="#000000"
-        android:text="Call 911 - >"
-        android:textAllCaps="true"
-        android:textColor="#ffffff"
-        android:textColorHighlight="#ffffff"
-        android:textSize="22dp"
-        android:textStyle="italic"
-        android:visibility="visible" />
-
-
 
 
     <Button
@@ -143,10 +113,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/Deny"
-        android:textColor="#ffffff"
-        android:layout_marginBottom="12dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="23dp"
         android:background="@drawable/buttoncolors"
-        android:text="Logout" />
+        android:text="Logout"
+        android:textColor="#ffffff" />
 
 </RelativeLayout>

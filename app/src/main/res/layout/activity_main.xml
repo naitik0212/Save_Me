@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="28dp"
         android:shadowColor="#000000"
         android:text="Need a Doctor.. Click Save Me!"
         android:textAllCaps="true"
@@ -33,9 +34,10 @@
         android:id="@+id/SaveMeUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="101dp"
         android:background="#324646"
-        android:layout_below="@+id/headertext"
         android:contentDescription="Save Me"
         android:src="@drawable/ic_home_save_me" />
 
@@ -69,83 +71,47 @@
         android:id="@+id/CancelSaveMeUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_alignStart="@+id/headertext"
-        android:textColor="#ffffff"
-        android:layout_below="@+id/ETApbUser"
+        android:layout_marginBottom="202dp"
         android:background="@drawable/buttoncolors1"
-        android:text="Cancel Request" />
+        android:text="Cancel Request"
+        android:textColor="#ffffff" />
 
 
     <Button
         android:id="@+id/CompleteSaveMeUser"
         android:layout_width="wrap_content"
-        android:textColor="#ffffff"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/headertext"
-        android:layout_below="@+id/ETApbUser"
-        android:layout_marginEnd="12dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/CancelSaveMeUser"
+        android:layout_marginEnd="50dp"
         android:background="@drawable/buttoncolors2"
-        android:text="Complete Request" />
+        android:text="Complete Request"
+        android:textColor="#ffffff" />
 
     <ImageButton
         android:id="@+id/call911"
-        android:layout_width="40dp"
-        android:layout_height="45dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/CompleteSaveMeUser"
-        android:layout_marginBottom="12dp"
-        android:layout_marginStart="11dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="33dp"
         android:background="#324646"
         android:contentDescription="Call 911"
         android:src="@drawable/ic_call911" />
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/CancelSaveMeUser"
-        android:layout_alignTop="@+id/call911"
-        android:shadowColor="#000000"
-        android:text="Call 911 - >"
-        android:textAllCaps="true"
-        android:textColor="#ffffff"
-        android:textColorHighlight="#ffffff"
-        android:textSize="22dp"
-        android:textStyle="italic"
-        android:visibility="visible" />
-
-
-
-    <!--<Button-->
-        <!--android:id="@+id/mapTrigger"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignEnd="@+id/CancelSaveMeUser"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_marginBottom="152dp"-->
-        <!--android:background="@drawable/buttoncolors"-->
-        <!--android:text="Open in Maps" />-->
-
-    <!--<Button-->
-        <!--android:id="@+id/Services"-->
-        <!--android:layout_width="wrap_content"-->
-
-        <!--android:layout_height="wrap_content"-->
-
-        <!--android:layout_alignBaseline="@+id/mapTrigger"-->
-        <!--android:layout_alignBottom="@+id/mapTrigger"-->
-        <!--android:layout_alignParentStart="true"-->
-        <!--android:background="@drawable/buttoncolors"-->
-        <!--android:text="Location Service Launcher" />-->
     <Button
         android:id="@+id/LogoutUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#ffffff"
-        android:layout_alignEnd="@+id/CompleteSaveMeUser"
-        android:layout_alignTop="@+id/call911"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="66dp"
+        android:layout_marginEnd="30dp"
         android:background="@drawable/buttoncolors"
-        android:text="Logout" />
+        android:text="Logout"
+        android:textColor="#ffffff" />
 
 
 </RelativeLayout>
