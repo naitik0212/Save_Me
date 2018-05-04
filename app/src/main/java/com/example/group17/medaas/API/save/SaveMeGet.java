@@ -46,7 +46,7 @@ public class SaveMeGet {
                             User user = null;
                             try {
                                 user = new User(response.getJSONObject(i));
-                            } catch(JSONException e) {
+                            } catch (JSONException e) {
                                 user = null;
                                 e.printStackTrace();
                             } finally {
@@ -63,7 +63,10 @@ public class SaveMeGet {
                         error.printStackTrace();
                     }
                 });
-
+        req.setRetryPolicy(new DefaultRetryPolicy(
+                DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 10,
+                10,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         // schedule request
         MyRequestQueue.getInstance(ctx).addToRequestQueue(req);
     }
