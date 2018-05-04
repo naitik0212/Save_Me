@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     // update thread for ETA
     private Thread threadETA;
     private int maxETA = 0;
+    private boolean continueETA = false;
 
     private TextView docListTV = null;
     private ImageButton saveMe;
@@ -215,6 +216,8 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     updateUI_DOCTOR_RESPONDED();
+                                    continueETA = true;
+                                    Log.d("ETA start", "run: starting ETA thread");
                                     threadETA.start();
                                 }
                             });
@@ -248,27 +251,32 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        Log.d("UI refreshing ON:", "starting updateTracker");
         updateTracker.start();
 
         // define ETA update thread
         threadETA = new Thread(new Runnable() {
             @Override
             public void run() {
-                while(Properties.clientDoctorSession.getStatus().equals(ClientDoctorSession.STATUS_DOCTOR_RESPONDED)) {
+                while(continueETA && Properties.clientDoctorSession.getStatus().equals(ClientDoctorSession.STATUS_DOCTOR_RESPONDED)) {
 
                     // update locations
+                    Log.d("inside ETA thread", "run: updating client user");
                     new UserGet().request(getApplicationContext(), Properties.clientDoctorSession.getDoctorUser().getId(),
                             new OnGetUserResponseSuccess() {
                                 @Override
                                 public void afterGetResponseSuccess(User user, int tokenId) {
+                                    Log.d("inside ETA thread", "run: updated client user");
                                     Properties.clientDoctorSession.setDoctorUser(user);
                                 }
                             }
                     );
+                    Log.d("inside ETA thread", "run: updating doctor user");
                     new UserGet().request(getApplicationContext(), Properties.clientDoctorSession.getClientUser().getId(),
                             new OnGetUserResponseSuccess() {
                                 @Override
                                 public void afterGetResponseSuccess(User user, int tokenId) {
+                                    Log.d("inside ETA thread", "run: updated doctor user");
                                     Properties.clientDoctorSession.setClientUser(user);
                                     Properties.saveToFile(new Gson().toJson(Properties.clientDoctorSession), Properties.credDir, Properties.activeSessionFile);
                                 }
@@ -276,13 +284,16 @@ public class MainActivity extends AppCompatActivity {
                     );
 
                     // update ETA
+                    Log.d("after updating users:", "run: getting ETA from Google API");
                     ETAGet etaGet = new ETAGet();
                     etaGet.request(getApplicationContext(), Properties.clientDoctorSession.getDoctorUser().getLocation(), Properties.clientDoctorSession.getClientUser().getLocation(),
                             new OnGetETAResponseSuccess() {
                                 @Override
                                 public void afterGetResponseSuccess(int ETA) {
                                     if (ETA != Properties.ETA_NULL) {
+                                        Log.d("ETA response:", Integer.toString(ETA));
                                         Properties.clientDoctorSession.setETA(ETA);
+                                        Log.d("ETA success:", "afterGetResponseSuccess: posting ETA updates to UI");
                                         mHandler.post(new Runnable() {
                                             @Override
                                             public void run() {
@@ -296,8 +307,11 @@ public class MainActivity extends AppCompatActivity {
                                                     etaBar.setMax(maxETA);
                                                 }
                                                 etaBar.setProgress(Properties.clientDoctorSession.getETA());
+                                                Log.d("ETA UI updated:", "afterGetResponseSuccess: progress bar and text view updated");
                                             }
                                         });
+                                    } else {
+                                        Log.d("ETA response:", "null eta reported from google API");
                                     }
                                 }
                             });
@@ -307,6 +321,7 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
+                continueETA = false;
             }
         });
     }
@@ -376,6 +391,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         updateUI = false;
+        continueETA = false;
         try {
             updateTracker.join();
             threadETA.join();

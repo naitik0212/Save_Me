@@ -3,6 +3,7 @@ package com.example.group17.medaas.API.token;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -49,6 +50,10 @@ public class TokenPost {
                         error.printStackTrace();
                     }
                 });
+        req.setRetryPolicy(new DefaultRetryPolicy(
+                DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 10,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         // schedule request
         MyRequestQueue.getInstance(ctx).addToRequestQueue(req);

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.ProgressBar;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -60,6 +61,11 @@ public class ETAGet {
                             postResponse.afterGetResponseSuccess(Properties.ETA_NULL);
                         }
                     });
+
+        req.setRetryPolicy(new DefaultRetryPolicy(
+                DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 10,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         // schedule request
         MyRequestQueue.getInstance(ctx).addToRequestQueue(req);

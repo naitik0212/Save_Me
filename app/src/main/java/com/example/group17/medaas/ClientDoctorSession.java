@@ -39,7 +39,7 @@ public class ClientDoctorSession {
         return clientUser;
     }
 
-    public void setClientUser(User clientUser) {
+    public synchronized void setClientUser(User clientUser) {
         this.clientUser = clientUser;
     }
 
@@ -47,7 +47,7 @@ public class ClientDoctorSession {
         return doctorUser;
     }
 
-    public void setDoctorUser(User doctorUser) {
+    public synchronized void setDoctorUser(User doctorUser) {
         this.doctorUser = doctorUser;
     }
 
@@ -55,7 +55,7 @@ public class ClientDoctorSession {
         return doctorsList;
     }
 
-    public void setDoctorsList(User[] doctorsList) {
+    public synchronized void setDoctorsList(User[] doctorsList) {
         this.doctorsList = doctorsList;
     }
 
@@ -63,7 +63,7 @@ public class ClientDoctorSession {
         return ETA;
     }
 
-    public void setETA(int ETA) {
+    public synchronized void setETA(int ETA) {
         this.ETA = ETA;
     }
 }

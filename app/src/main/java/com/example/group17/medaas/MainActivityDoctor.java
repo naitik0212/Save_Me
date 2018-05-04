@@ -45,6 +45,7 @@ public class MainActivityDoctor extends AppCompatActivity {
     // update thread for ETA
     private Thread threadETA;
     private int maxETA = 0;
+    private boolean continueETA = false;
 
 
     private TextView reqDetailTV = null;
@@ -319,7 +320,7 @@ public class MainActivityDoctor extends AppCompatActivity {
         threadETA = new Thread(new Runnable() {
             @Override
             public void run() {
-                while(Properties.clientDoctorSession.getStatus().equals(ClientDoctorSession.STATUS_DOCTOR_RESPONDED_OUTGOING) ||
+                while(continueETA && Properties.clientDoctorSession.getStatus().equals(ClientDoctorSession.STATUS_DOCTOR_RESPONDED_OUTGOING) ||
                         Properties.clientDoctorSession.getStatus().equals(ClientDoctorSession.STATUS_DOCTOR_RESPONDED )) {
 
                     // update locations
@@ -373,6 +374,7 @@ public class MainActivityDoctor extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
+                continueETA = false;
             }
         });
     }
@@ -436,7 +438,9 @@ public class MainActivityDoctor extends AppCompatActivity {
         String text = "Medical emergency requested by...: \n\n";
         text += Properties.clientDoctorSession.getClientUser().getFirstName() + " " +
                 Properties.clientDoctorSession.getClientUser().getLastName() + " " +
-                Properties.clientDoctorSession.getClientUser().getPhoneNumber() + "\n";
+                Properties.clientDoctorSession.getClientUser().getPhoneNumber() + "\n" +
+                "Emergency Contact Number of patient: " + Properties.clientDoctorSession.getClientUser().getEmergencyNumber() + "\n" +
+                "Location coordinates: " +Properties.clientDoctorSession.getClientUser().getLocation();
 
         reqDetailTV.setText(text);
     }
@@ -454,7 +458,9 @@ public class MainActivityDoctor extends AppCompatActivity {
         String text = "You are attending this patient...: \n\n";
         text += Properties.clientDoctorSession.getClientUser().getFirstName() + " " +
                 Properties.clientDoctorSession.getClientUser().getLastName() + " " +
-                Properties.clientDoctorSession.getClientUser().getPhoneNumber() + "\n\n";
+                Properties.clientDoctorSession.getClientUser().getPhoneNumber() + "\n" +
+                "Emergency Contact Number of patient: " + Properties.clientDoctorSession.getClientUser().getEmergencyNumber() + "\n" +
+                "Location coordinates: " +Properties.clientDoctorSession.getClientUser().getLocation();
 
         reqDetailTV.setText(text);
     }
@@ -488,6 +494,7 @@ public class MainActivityDoctor extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         updateUI = false;
+        continueETA = false;
         try {
             updateTracker.join();
             threadETA.join();
