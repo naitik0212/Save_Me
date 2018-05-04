@@ -54,12 +54,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         @Override
                         public void afterGetResponseSuccess(User user, int tokenId) {
                             // start client doctor session
-                            Properties.clientDoctorSession = new ClientDoctorSession();
                             Properties.clientDoctorSession.setStatus(ClientDoctorSession.STATUS_CLIENT_REQUESTED);
                             Properties.clientDoctorSession.setClientUser(user);
                             Properties.clientDoctorSession.setDoctorUser(Properties.user);
                             Properties.saveToFile(new Gson().toJson(Properties.clientDoctorSession), Properties.credDir, Properties.activeSessionFile);
-
 
                             // notification handling
                             Intent intent = new Intent(getApplicationContext(), MainActivityDoctor.class);

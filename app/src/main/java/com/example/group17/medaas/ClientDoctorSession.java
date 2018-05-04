@@ -10,6 +10,7 @@ public class ClientDoctorSession {
     private User clientUser = null; // client requesting
     private User doctorUser = null; // doctor attending
     private User[] doctorsList = null; // list of doctors on received on client's request
+    private int ETA = Properties.ETA_NULL; // estimated arrival time
 
     private String status = null;   // state transitions reflect here
 
@@ -56,5 +57,13 @@ public class ClientDoctorSession {
 
     public void setDoctorsList(User[] doctorsList) {
         this.doctorsList = doctorsList;
+    }
+
+    public int getETA() {
+        return ETA;
+    }
+
+    public void setETA(int ETA) {
+        this.ETA = ETA;
     }
 }

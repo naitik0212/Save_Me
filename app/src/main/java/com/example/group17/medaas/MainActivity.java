@@ -15,14 +15,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.group17.medaas.API.GoogleETA.ETAGet;
+import com.example.group17.medaas.API.GoogleETA.callback.OnGetETAResponseSuccess;
 import com.example.group17.medaas.API.save.SaveMeGet;
 import com.example.group17.medaas.API.save.SaveMePost;
 import com.example.group17.medaas.API.save.callback.OnGetSaveMeResponseSuccess;
 import com.example.group17.medaas.API.save.callback.OnPostSaveMeResponseSuccess;
 import com.example.group17.medaas.API.model.User;
+import com.example.group17.medaas.API.user.UserGet;
+import com.example.group17.medaas.API.user.callback.OnGetUserResponseSuccess;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -38,12 +43,18 @@ public class MainActivity extends AppCompatActivity {
     private Thread updateTracker;
     private final int SCREEN_REFRESH_RATE_IN_MILLIS = 300;
 
+    // update thread for ETA
+    private Thread threadETA;
+    private int maxETA = 0;
+
     private TextView docListTV = null;
     private ImageButton saveMe;
     private ImageButton call911;
     private Button cancelSaveMe;
     private Button logout;
     private Button completedSaveMe;
+    private ProgressBar etaBar;
+    private TextView etaText;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -61,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         cancelSaveMe = (Button) findViewById(R.id.CancelSaveMeUser);
         completedSaveMe = (Button) findViewById(R.id.CompleteSaveMeUser);
         logout = (Button) findViewById(R.id.LogoutUser);
+        etaBar = (ProgressBar) findViewById(R.id.ETApbUser);
+        etaText = (TextView) findViewById(R.id.ETAUser);
 
         docListTV = (TextView) findViewById(R.id.DocList);
         docListTV.setMovementMethod(new ScrollingMovementMethod());
@@ -202,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     updateUI_DOCTOR_RESPONDED();
+                                    threadETA.start();
                                 }
                             });
                         } else if (newStatus.equals(ClientDoctorSession.STATUS_DOCTOR_CANCELLED)) {
@@ -235,41 +249,112 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         updateTracker.start();
+
+        // define ETA update thread
+        threadETA = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(Properties.clientDoctorSession.getStatus().equals(ClientDoctorSession.STATUS_DOCTOR_RESPONDED)) {
+
+                    // update locations
+                    new UserGet().request(getApplicationContext(), Properties.clientDoctorSession.getDoctorUser().getId(),
+                            new OnGetUserResponseSuccess() {
+                                @Override
+                                public void afterGetResponseSuccess(User user, int tokenId) {
+                                    Properties.clientDoctorSession.setDoctorUser(user);
+                                }
+                            }
+                    );
+                    new UserGet().request(getApplicationContext(), Properties.clientDoctorSession.getClientUser().getId(),
+                            new OnGetUserResponseSuccess() {
+                                @Override
+                                public void afterGetResponseSuccess(User user, int tokenId) {
+                                    Properties.clientDoctorSession.setClientUser(user);
+                                    Properties.saveToFile(new Gson().toJson(Properties.clientDoctorSession), Properties.credDir, Properties.activeSessionFile);
+                                }
+                            }
+                    );
+
+                    // update ETA
+                    ETAGet etaGet = new ETAGet();
+                    etaGet.request(getApplicationContext(), Properties.clientDoctorSession.getDoctorUser().getLocation(), Properties.clientDoctorSession.getClientUser().getLocation(),
+                            new OnGetETAResponseSuccess() {
+                                @Override
+                                public void afterGetResponseSuccess(int ETA) {
+                                    if (ETA != Properties.ETA_NULL) {
+                                        Properties.clientDoctorSession.setETA(ETA);
+                                        mHandler.post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                if (Properties.clientDoctorSession.getETA() == Properties.ETA_NULL) return;
+                                                String etaString = "ETA: ";
+                                                etaString += Integer.toString((int) Properties.clientDoctorSession.getETA() / 60) + " min ";
+                                                etaString += Integer.toString((int) Properties.clientDoctorSession.getETA() % 60) + " s" ;
+                                                etaText.setText(etaString);
+                                                if (maxETA < Properties.clientDoctorSession.getETA()) {
+                                                    maxETA = Properties.clientDoctorSession.getETA();
+                                                    etaBar.setMax(maxETA);
+                                                }
+                                                etaBar.setProgress(Properties.clientDoctorSession.getETA());
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
     private void updateUI_STATUS_READY() {
+
         saveMe.setVisibility(View.VISIBLE);
         saveMe.setEnabled(true);
+        etaText.setVisibility(View.INVISIBLE);
+        etaText.setText("");
+        etaBar.setVisibility(View.INVISIBLE);
         cancelSaveMe.setVisibility(View.INVISIBLE);
         completedSaveMe.setVisibility(View.INVISIBLE);
-        docListTV.setText("We are here for your safety");
+        docListTV.setText("Hello " + Properties.user.getFirstName() + " " + Properties.user.getLastName() + "\nWe are here for your safety");
     }
 
     private void updateUI_CLIENT_REQUESTED() {
         saveMe.setVisibility(View.VISIBLE);
         saveMe.setEnabled(false);
+        etaText.setVisibility(View.INVISIBLE);
+        etaText.setText("");
+        etaBar.setVisibility(View.INVISIBLE);
         cancelSaveMe.setVisibility(View.VISIBLE);
         completedSaveMe.setVisibility(View.INVISIBLE);
-        docListTV.setText("Searching doctors in vicinity...\n\n ...click Cancel to cancel the request.");
+        docListTV.setText("Searching doctors in vicinity...");
     }
 
     private void updateUI_DOCTOR_RESPONDED() {
         saveMe.setVisibility(View.VISIBLE);
         saveMe.setEnabled(false);
+        etaText.setVisibility(View.VISIBLE);
+        etaBar.setVisibility(View.VISIBLE);
         cancelSaveMe.setVisibility(View.VISIBLE);
         completedSaveMe.setVisibility(View.VISIBLE);
 
         String text = "Following doctor will attend you: \n\n";
         text += Properties.clientDoctorSession.getDoctorUser().getFirstName() + " " +
                 Properties.clientDoctorSession.getDoctorUser().getLastName() + " " +
-                Properties.clientDoctorSession.getDoctorUser().getPhoneNumber() + "\n";
-        text += "...click Cancel to cancel the request, or Completed to finish the request.";
+                Properties.clientDoctorSession.getDoctorUser().getPhoneNumber();
         docListTV.setText(text);
     }
 
     private void updateUI_DOCTOR_CANCELLED() {
         saveMe.setVisibility(View.VISIBLE);
         saveMe.setEnabled(false);
+        etaText.setVisibility(View.INVISIBLE);
+        etaText.setText("");
+        etaBar.setVisibility(View.INVISIBLE);
         cancelSaveMe.setVisibility(View.VISIBLE);
         completedSaveMe.setVisibility(View.INVISIBLE);
         docListTV.setText("Doctor is not available.\nNotifying other doctors in vicinity...");
@@ -283,8 +368,7 @@ public class MainActivity extends AppCompatActivity {
                         doc.getLastName() + " " +
                         doc.getPhoneNumber() + "\n";
             }
-            text += "... please wait until someone responds.\n\n";
-            text += "...click Cancel to cancel the request.";
+            text += "\n... please wait until someone responds.\n\n";
             docListTV.setText(text);
         }
     }
@@ -294,6 +378,7 @@ public class MainActivity extends AppCompatActivity {
         updateUI = false;
         try {
             updateTracker.join();
+            threadETA.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

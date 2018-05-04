@@ -43,11 +43,27 @@
     <TextView
         android:id="@+id/DocList"
         android:layout_width="match_parent"
-        android:layout_height="170dp"
+        android:layout_height="110dp"
         android:layout_below="@+id/SaveMeUser"
         android:textColor="#ffffff"
         android:layout_centerHorizontal="true"
         android:text="..." />
+
+    <TextView
+        android:id="@+id/ETAUser"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/DocList"
+        android:textColor="#ffffff"
+        android:layout_centerHorizontal="true"
+        android:text="..." />
+
+    <ProgressBar
+        android:id="@+id/ETApbUser"
+        android:layout_width="fill_parent"
+        android:layout_height="20dp"
+        android:layout_below="@+id/ETAUser"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
 
     <Button
         android:id="@+id/CancelSaveMeUser"
@@ -55,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/headertext"
         android:textColor="#ffffff"
-        android:layout_below="@+id/DocList"
+        android:layout_below="@+id/ETApbUser"
         android:background="@drawable/buttoncolors1"
         android:text="Cancel Request" />
 
@@ -66,7 +82,7 @@
         android:textColor="#ffffff"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/headertext"
-        android:layout_below="@+id/DocList"
+        android:layout_below="@+id/ETApbUser"
         android:layout_marginEnd="12dp"
         android:background="@drawable/buttoncolors2"
         android:text="Complete Request" />

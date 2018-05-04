@@ -3,6 +3,7 @@ package com.example.group17.medaas.API.save;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
@@ -10,9 +11,13 @@ import com.example.group17.medaas.API.model.MyRequestQueue;
 import com.example.group17.medaas.API.model.User;
 import com.example.group17.medaas.API.save.callback.OnGetSaveMeResponseSuccess;
 import com.example.group17.medaas.Properties;
+import com.google.android.gms.common.util.CrashUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
 
 import static com.android.volley.VolleyLog.TAG;
 
@@ -62,5 +67,4 @@ public class SaveMeGet {
         // schedule request
         MyRequestQueue.getInstance(ctx).addToRequestQueue(req);
     }
-
 }
