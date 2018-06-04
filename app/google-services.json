@@ -1,6 +1,6 @@
 {
   "project_info": {
-    "project_number": "77296001374",
+    "project_number": "77296001374***",
     "firebase_url": "https://savemetest-f35ce.firebaseio.com",
     "project_id": "savemetest-f35ce",
     "storage_bucket": "savemetest-f35ce.appspot.com"
@@ -8,20 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:77296001374:android:fe785a57539c395a",
+        "mobilesdk_app_id": "1:77296001374:android:fe785a57539c395a***",
         "android_client_info": {
           "package_name": "com.example.group17.fcmtestapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "77296001374-793e7gb9l492orr18p9hfi5lnp8l7en9.apps.googleusercontent.com",
+          "client_id": "77296001374-793e7gb9l492orr18p9hfi5lnp8l7en9***.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDrf6Z7Pe0x5duvf1ZKCQZQF36hNauPsNA"
+          "current_key": "AIzaSyDrf6Z7Pe0x5duvf1ZKCQZQF36hNauPsNA***"
         }
       ],
       "services": {
@@ -39,20 +39,20 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:77296001374:android:417ef5e675ad0a14",
+        "mobilesdk_app_id": "1:77296001374:android:417ef5e675ad0a14***",
         "android_client_info": {
           "package_name": "com.example.group17.medaas"
         }
       },
       "oauth_client": [
         {
-          "client_id": "77296001374-793e7gb9l492orr18p9hfi5lnp8l7en9.apps.googleusercontent.com",
+          "client_id": "77296001374-793e7gb9l492orr18p9hfi5lnp8l7en9***.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDrf6Z7Pe0x5duvf1ZKCQZQF36hNauPsNA"
+          "current_key": "AIzaSyDrf6Z7Pe0x5duvf1ZKCQZQF36hNauPsNA***"
         }
       ],
       "services": {
